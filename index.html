@@ -2,964 +2,868 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>FEAR — Find Early, Act Responsibly</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --pink:#E8547A;--pink-light:#FDEEF3;--pink-mid:#F5B8CC;
+  --pink:#E8547A;--pink2:#C94073;--pink-light:#FDEEF3;--pink-mid:#F5B8CC;
   --teal:#3BBFAD;--teal-light:#E6F9F7;
   --amber:#F5A623;--amber-light:#FEF3E2;
-  --red-soft:#FF6B6B;
-  --text:#1A0A12;--text2:#7A5265;--text3:#B8899C;
-  --bg:#FBF7F9;--card:#FFFFFF;--border:#F0DDE7;
-  --radius:20px;--radius-sm:12px;
-  --font-head:'Fraunces',serif;--font-body:'DM Sans',sans-serif;
+  --green:#4CAF50;--green-light:#E8F5E9;
+  --text:#1A0A12;--text2:#6B4558;--text3:#A8809A;
+  --bg:#F8F3F6;--card:#FFFFFF;--border:#EEE0E8;--border2:#F5EAF0;
+  --sidebar:260px;
+  --font-h:'Fraunces',serif;--font:'DM Sans',sans-serif;
+  --r:16px;--r-sm:10px;
 }
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);overflow:hidden;}
 
-body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;}
+/* ═══════════ LAYOUT ═══════════ */
+.layout{display:grid;grid-template-columns:var(--sidebar) 1fr;grid-template-rows:100vh;height:100vh;}
 
-/* ── APP SHELL ── */
-.shell{display:flex;flex-direction:column;height:100vh;max-width:430px;margin:0 auto;background:#fff;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(232,84,122,0.08);}
+/* ═══════════ SIDEBAR ═══════════ */
+.sidebar{background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
 
-/* ── TOP NAV ── */
-.topnav{display:flex;align-items:center;padding:14px 20px 10px;gap:12px;background:#fff;border-bottom:1px solid var(--border);flex-shrink:0;z-index:10;}
-.nav-back{width:34px;height:34px;border-radius:50%;background:var(--pink-light);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s;}
-.nav-back:hover{background:var(--pink-mid);}
-.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--pink),#C94073);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.nav-info{flex:1;}
-.nav-name{font-size:15px;font-weight:500;color:var(--text);font-family:var(--font-head);}
-.nav-sub{font-size:11px;color:var(--text3);margin-top:1px;}
-.nav-dot{width:8px;height:8px;border-radius:50%;background:#ccc;transition:background 0.3s;flex-shrink:0;}
-.nav-dot.on{background:#4CAF50;}
-.nav-dot.off{background:#FF5252;}
+.brand{padding:22px 20px 16px;border-bottom:1px solid var(--border2);flex-shrink:0;}
+.brand-logo{display:flex;align-items:center;gap:10px;margin-bottom:2px;}
+.brand-heart{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--pink),var(--pink2));display:flex;align-items:center;justify-content:center;}
+.brand-name{font-family:var(--font-h);font-size:20px;font-weight:600;color:var(--text);letter-spacing:-0.3px;}
+.brand-tagline{font-size:11px;color:var(--text3);padding-left:42px;margin-top:-2px;}
 
-/* ── PROGRESS ── */
-.prog-wrap{padding:8px 20px 0;flex-shrink:0;background:#fff;}
-.prog-track{height:3px;background:var(--border);border-radius:3px;overflow:hidden;}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--pink),#C94073);border-radius:3px;transition:width 0.5s cubic-bezier(.4,0,.2,1);}
-.prog-label{font-size:10px;color:var(--text3);text-align:right;margin-top:4px;margin-bottom:6px;}
+.sidebar-nav{display:flex;flex-direction:column;gap:2px;padding:12px 10px;flex-shrink:0;border-bottom:1px solid var(--border2);}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r-sm);cursor:pointer;transition:all 0.15s;font-size:13px;color:var(--text2);}
+.nav-item:hover{background:var(--pink-light);color:var(--pink);}
+.nav-item.active{background:var(--pink-light);color:var(--pink);font-weight:500;}
+.nav-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
 
-/* ── SCREENS ── */
-.screen{display:none;flex-direction:column;flex:1;overflow:hidden;}
-.screen.active{display:flex;}
+.sidebar-section{padding:6px 10px 0;}
+.sidebar-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.7px;color:var(--text3);padding:8px 12px 4px;}
 
-/* ── INBOX SCREEN ── */
-.inbox-header{padding:20px 20px 12px;flex-shrink:0;}
-.inbox-header h1{font-family:var(--font-head);font-size:26px;font-weight:600;color:var(--text);}
-.inbox-header p{font-size:13px;color:var(--text3);margin-top:3px;}
-.inbox-scroll{flex:1;overflow-y:auto;padding:0 16px 20px;}
-.inbox-section-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);padding:12px 4px 6px;}
+.chat-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r-sm);cursor:pointer;transition:all 0.15s;position:relative;}
+.chat-row:hover{background:var(--bg);}
+.chat-row.active{background:var(--pink-light);}
+.cr-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.cr-pink{background:var(--pink-light);}
+.cr-teal{background:var(--teal-light);}
+.cr-amber{background:var(--amber-light);}
+.cr-green{background:var(--green-light);}
+.cr-info{flex:1;min-width:0;}
+.cr-title{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cr-preview{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+.cr-badge{width:7px;height:7px;border-radius:50%;background:var(--pink);flex-shrink:0;}
+.cr-lock{font-size:11px;opacity:0.35;flex-shrink:0;}
+.chat-row.locked{opacity:0.5;cursor:default;}
+.chat-row.locked:hover{background:transparent;}
 
-.chat-item{display:flex;align-items:center;gap:12px;padding:13px 14px;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:all 0.15s;position:relative;}
-.chat-item:hover{background:var(--pink-light);border-color:var(--pink-mid);}
-.chat-item:active{transform:scale(0.98);}
-.chat-icon{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;}
-.ci-pink{background:var(--pink-light);}
-.ci-teal{background:var(--teal-light);}
-.ci-amber{background:var(--amber-light);}
-.chat-meta{flex:1;min-width:0;}
-.chat-meta-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;}
-.chat-meta-preview{font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.chat-meta-time{font-size:10px;color:var(--text3);flex-shrink:0;}
-.chat-unread{position:absolute;top:13px;right:14px;width:8px;height:8px;border-radius:50%;background:var(--pink);}
-.chat-lock{font-size:12px;opacity:0.4;}
+.sidebar-footer{margin-top:auto;padding:14px 16px;border-top:1px solid var(--border2);display:flex;align-items:center;gap:10px;}
+.api-dot{width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0;transition:background 0.3s;}
+.api-dot.on{background:var(--green);}
+.api-dot.off{background:#EF5350;}
+.api-label{font-size:11px;color:var(--text3);}
 
-.fear-banner{background:linear-gradient(135deg,#FFF0F4,#FDEEF3);border:1px solid var(--pink-mid);border-radius:var(--radius);padding:16px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start;}
-.fear-banner-icon{font-size:24px;flex-shrink:0;}
-.fear-banner h3{font-family:var(--font-head);font-size:15px;font-weight:500;color:var(--pink);margin-bottom:3px;}
-.fear-banner p{font-size:12px;color:var(--text2);line-height:1.45;}
+/* ═══════════ MAIN PANEL ═══════════ */
+.main{display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
 
-/* ── CHAT SCREEN ── */
-.chat-scroll{flex:1;overflow-y:auto;padding:12px 16px 8px;display:flex;flex-direction:column;gap:10px;}
-.msg-bot-row{display:flex;align-items:flex-end;gap:8px;animation:fadeUp 0.3s ease;}
-.msg-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--pink),#C94073);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
-.bubble{padding:11px 14px;border-radius:18px;font-size:14px;line-height:1.55;max-width:88%;animation:fadeUp 0.3s ease;}
-.bubble.bot{background:#F6F6F6;border-bottom-left-radius:4px;color:var(--text);}
-.bubble.user{background:var(--pink);color:#fff;border-bottom-right-radius:4px;align-self:flex-end;margin-left:auto;}
+/* top bar */
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 28px;height:58px;display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.topbar-icon{width:36px;height:36px;border-radius:50%;background:var(--pink-light);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.topbar-info{flex:1;}
+.topbar-title{font-size:15px;font-weight:500;color:var(--text);font-family:var(--font-h);}
+.topbar-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.prog-wrap{display:flex;align-items:center;gap:10px;}
+.prog-track{width:140px;height:4px;background:var(--border);border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--pink2));border-radius:4px;transition:width 0.5s cubic-bezier(.4,0,.2,1);}
+.prog-txt{font-size:11px;color:var(--text3);white-space:nowrap;}
 
+/* ═══════════ CONTENT AREA ═══════════ */
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+
+/* ── Inbox / Home ── */
+.home-panel{flex:1;overflow-y:auto;padding:28px 32px;}
+.home-hero{background:linear-gradient(135deg,#FFF0F5,#FDEEF3);border:1px solid var(--pink-mid);border-radius:20px;padding:28px 32px;display:flex;align-items:center;gap:24px;margin-bottom:24px;}
+.hero-text h1{font-family:var(--font-h);font-size:28px;font-weight:600;color:var(--text);line-height:1.2;margin-bottom:6px;}
+.hero-text h1 em{color:var(--pink);font-style:italic;}
+.hero-text p{font-size:14px;color:var(--text2);line-height:1.6;max-width:480px;}
+.hero-cta{margin-top:16px;background:var(--pink);border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:500;font-family:var(--font);color:#fff;cursor:pointer;transition:background 0.15s,transform 0.1s;}
+.hero-cta:hover{background:var(--pink2);}
+.hero-cta:active{transform:scale(0.98);}
+.hero-illust{flex-shrink:0;opacity:0.85;}
+
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;}
+.stat-card .sc-icon{font-size:22px;margin-bottom:8px;}
+.stat-card .sc-val{font-family:var(--font-h);font-size:22px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.stat-card .sc-label{font-size:12px;color:var(--text3);}
+
+.quick-chats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.qc-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;gap:10px;}
+.qc-card:hover{border-color:var(--pink-mid);box-shadow:0 4px 16px rgba(232,84,122,0.08);transform:translateY(-2px);}
+.qc-card.locked-card{opacity:0.5;cursor:default;}
+.qc-card.locked-card:hover{transform:none;box-shadow:none;border-color:var(--border);}
+.qc-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.qc-card .qc-title{font-size:14px;font-weight:500;color:var(--text);}
+.qc-card .qc-desc{font-size:12px;color:var(--text3);line-height:1.45;}
+.qc-badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;align-self:flex-start;}
+.badge-new{background:var(--pink-light);color:var(--pink);}
+.badge-lock{background:var(--bg);color:var(--text3);}
+.badge-done{background:var(--green-light);color:#2E7D32;}
+
+/* ── Chat panel ── */
+.chat-panel{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.chat-messages{flex:1;overflow-y:auto;padding:24px 28px;display:flex;flex-direction:column;gap:12px;}
+.msg-row{display:flex;align-items:flex-end;gap:10px;animation:fadeUp 0.3s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.msg-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--pink2));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.bubble{padding:12px 16px;border-radius:18px;font-size:14px;line-height:1.6;max-width:600px;}
+.bubble.bot{background:#fff;border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--text);}
+.bubble.user{background:var(--pink);color:#fff;border-bottom-right-radius:4px;align-self:flex-end;margin-left:auto;}
+.bubble.note{background:#FBF4F7;border:1px solid var(--border2);font-size:13px;color:var(--text2);}
 
 /* typing */
-.typing-dots{display:flex;gap:4px;align-items:center;padding:3px 2px;}
-.typing-dots span{width:6px;height:6px;border-radius:50%;background:#C0A0AA;animation:blink 1.3s infinite;}
+.typing-dots{display:flex;gap:4px;align-items:center;padding:2px;}
+.typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--pink-mid);animation:blink 1.3s infinite;}
 .typing-dots span:nth-child(2){animation-delay:.18s;}
 .typing-dots span:nth-child(3){animation-delay:.36s;}
 @keyframes blink{0%,80%,100%{opacity:.3;transform:scale(.75);}40%{opacity:1;transform:scale(1);}}
 
-/* ── VISUAL OPTION CARDS (Flo-style) ── */
-.options-area{flex-shrink:0;padding:8px 16px 16px;background:#fff;border-top:1px solid var(--border);}
-.options-label{font-size:11px;color:var(--text3);margin-bottom:8px;text-align:center;}
+/* ── OPTIONS AREA ── */
+.options-panel{background:#fff;border-top:1px solid var(--border);padding:16px 28px 20px;flex-shrink:0;}
+.opt-hint{font-size:12px;color:var(--text3);margin-bottom:10px;}
 
-/* Grid of illustrated cards */
-.illust-grid{display:grid;gap:8px;margin-bottom:10px;}
-.illust-grid.cols2{grid-template-columns:1fr 1fr;}
-.illust-grid.cols3{grid-template-columns:repeat(3,1fr);}
-.illust-grid.cols4{grid-template-columns:repeat(4,1fr);}
-
-.illust-card{background:var(--bg);border:2px solid var(--border);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all 0.15s;text-align:center;}
+/* illustrated grid */
+.illust-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;}
+.illust-card{background:var(--bg);border:2px solid var(--border);border-radius:14px;padding:14px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:all 0.15s;text-align:center;min-width:110px;flex:1;max-width:160px;}
 .illust-card:hover{border-color:var(--pink-mid);background:var(--pink-light);}
 .illust-card.selected{border-color:var(--pink);background:var(--pink-light);}
-.illust-card svg,.illust-card .ic-emoji{flex-shrink:0;}
-.ic-emoji{font-size:28px;line-height:1;}
-.ic-label{font-size:11px;font-weight:500;color:var(--text2);line-height:1.2;}
+.ic-emoji{font-size:30px;line-height:1;}
+.ic-label{font-size:12px;font-weight:500;color:var(--text2);line-height:1.3;}
 .illust-card.selected .ic-label{color:var(--pink);}
 
-/* Simple text options */
-.text-options{display:flex;flex-direction:column;gap:7px;}
-.text-opt{background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;font-size:13px;font-family:var(--font-body);color:var(--text2);cursor:pointer;text-align:left;transition:all 0.15s;}
-.text-opt:hover{background:var(--pink-light);border-color:var(--pink-mid);color:var(--pink);}
-.text-opt.selected{background:var(--pink-light);border-color:var(--pink);color:var(--pink);}
+/* body location grid — tighter */
+.body-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+.body-card{background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all 0.15s;text-align:center;min-width:90px;flex:1;max-width:130px;}
+.body-card:hover{border-color:var(--pink-mid);background:var(--pink-light);}
+.body-card.selected{border-color:var(--pink);background:var(--pink-light);}
+.body-card .ic-label{font-size:11px;font-weight:500;color:var(--text2);}
+.body-card.selected .ic-label{color:var(--pink);}
 
-.send-btn{width:100%;margin-top:8px;background:var(--pink);border:none;border-radius:14px;padding:13px;font-size:14px;font-weight:500;font-family:var(--font-body);color:#fff;cursor:pointer;transition:background 0.15s,transform 0.1s;}
-.send-btn:hover{background:#D4476C;}
+.send-row{display:flex;align-items:center;gap:12px;margin-top:4px;}
+.send-btn{background:var(--pink);border:none;border-radius:12px;padding:12px 28px;font-size:14px;font-weight:500;font-family:var(--font);color:#fff;cursor:pointer;transition:all 0.15s;}
+.send-btn:hover{background:var(--pink2);}
 .send-btn:active{transform:scale(0.98);}
-.send-btn:disabled{background:#E8BFCC;cursor:not-allowed;}
+.send-btn:disabled{background:var(--pink-mid);cursor:not-allowed;}
+.single-btn{background:var(--pink-light);border:1.5px solid var(--pink-mid);border-radius:12px;padding:12px 28px;font-size:14px;font-weight:500;font-family:var(--font);color:var(--pink);cursor:pointer;transition:all 0.15s;}
+.single-btn:hover{background:var(--pink);color:#fff;}
 
-/* single big option */
-.single-opt{width:100%;background:var(--pink-light);border:1.5px solid var(--pink-mid);border-radius:14px;padding:13px;font-size:14px;font-weight:500;font-family:var(--font-body);color:var(--pink);cursor:pointer;transition:all 0.15s;}
-.single-opt:hover{background:var(--pink);color:#fff;}
-
-/* ── RISK RESULT CARD ── */
-.risk-card{border-radius:var(--radius);padding:16px;margin:4px 0;animation:fadeUp 0.4s ease;}
+/* ── Risk card ── */
+.risk-card{border-radius:var(--r);padding:20px;animation:fadeUp 0.4s ease;max-width:560px;}
 .risk-card.low{background:#E8F5E9;border:1px solid #A5D6A7;}
 .risk-card.medium{background:#FFF8E1;border:1px solid #FFD54F;}
 .risk-card.high{background:#FFEBEE;border:1px solid #EF9A9A;}
-.risk-pill{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;padding:3px 10px;border-radius:20px;margin-bottom:8px;}
-.risk-card.low .risk-pill{background:#C8E6C9;color:#2E7D32;}
-.risk-card.medium .risk-pill{background:#FFE082;color:#F57F17;}
-.risk-card.high .risk-pill{background:#FFCDD2;color:#C62828;}
-.risk-title{font-family:var(--font-head);font-size:16px;font-weight:500;margin-bottom:6px;}
+.risk-pill{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;padding:3px 12px;border-radius:20px;margin-bottom:10px;}
+.risk-card.low .risk-pill{background:#C8E6C9;color:#1B5E20;}
+.risk-card.medium .risk-pill{background:#FFE082;color:#E65100;}
+.risk-card.high .risk-pill{background:#FFCDD2;color:#B71C1C;}
+.risk-title{font-family:var(--font-h);font-size:18px;font-weight:500;margin-bottom:8px;}
 .risk-card.low .risk-title{color:#1B5E20;}
 .risk-card.medium .risk-title{color:#E65100;}
 .risk-card.high .risk-title{color:#B71C1C;}
-.risk-body{font-size:13px;line-height:1.55;margin-bottom:10px;}
+.risk-body{font-size:13px;line-height:1.6;margin-bottom:12px;}
 .risk-card.low .risk-body{color:#388E3C;}
 .risk-card.medium .risk-body{color:#EF6C00;}
 .risk-card.high .risk-body{color:#C62828;}
-.actions-list{display:flex;flex-direction:column;gap:7px;}
+.actions-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
 .action-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;}
 .action-dot{width:6px;height:6px;border-radius:50%;margin-top:5px;flex-shrink:0;}
-.risk-card.low .action-dot{background:#4CAF50;}
-.risk-card.medium .action-dot{background:#FFA000;}
-.risk-card.high .action-dot{background:#E53935;}
-.risk-card.low .action-item{color:#2E7D32;}
-.risk-card.medium .action-item{color:#E65100;}
-.risk-card.high .action-item{color:#C62828;}
-.conf-wrap{margin-top:12px;}
+.risk-card.low .action-dot{background:#4CAF50;} .risk-card.low .action-item{color:#2E7D32;}
+.risk-card.medium .action-dot{background:#FFA000;} .risk-card.medium .action-item{color:#E65100;}
+.risk-card.high .action-dot{background:#E53935;} .risk-card.high .action-item{color:#C62828;}
 .conf-track{height:5px;background:rgba(0,0,0,.07);border-radius:5px;overflow:hidden;}
 .conf-bar{height:100%;border-radius:5px;transition:width 1.2s ease;}
 .risk-card.low .conf-bar{background:#66BB6A;}
 .risk-card.medium .conf-bar{background:#FFA726;}
 .risk-card.high .conf-bar{background:#EF5350;}
-.conf-text{font-size:10px;margin-top:4px;opacity:.7;}
-.risk-card.low .conf-text{color:#2E7D32;}
-.risk-card.medium .conf-text{color:#E65100;}
-.risk-card.high .conf-text{color:#C62828;}
+.conf-txt{font-size:11px;margin-top:4px;opacity:.7;}
+.risk-card.low .conf-txt{color:#2E7D32;} .risk-card.medium .conf-txt{color:#E65100;} .risk-card.high .conf-txt{color:#C62828;}
 
-/* followup */
-.followup-badge{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 13px;font-size:12px;color:var(--text2);}
-
-/* disclaimer */
-.disclaimer{font-size:10px;color:var(--text3);text-align:center;line-height:1.5;padding:0 10px;margin-top:6px;}
-
-/* restart */
-.restart-btn{width:100%;background:transparent;border:1px solid var(--border);border-radius:12px;padding:11px;font-size:13px;font-family:var(--font-body);color:var(--text3);cursor:pointer;margin-top:10px;transition:all 0.15s;}
+.followup-badge{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:9px 14px;font-size:12px;color:var(--text2);margin-top:8px;}
+.disclaimer{font-size:11px;color:var(--text3);line-height:1.5;margin-top:8px;max-width:500px;}
+.restart-btn{background:transparent;border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-size:13px;font-family:var(--font);color:var(--text3);cursor:pointer;margin-top:10px;transition:all 0.15s;}
 .restart-btn:hover{background:var(--pink-light);color:var(--pink);border-color:var(--pink-mid);}
 
-/* ── BOTTOM TAB BAR ── */
-.tabbar{display:flex;background:#fff;border-top:1px solid var(--border);flex-shrink:0;padding:8px 0 12px;}
-.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px;transition:all 0.15s;}
-.tab-icon{font-size:20px;line-height:1;}
-.tab-label{font-size:10px;color:var(--text3);font-family:var(--font-body);}
-.tab-btn.active .tab-label{color:var(--pink);font-weight:500;}
-
 /* scrollbar */
-::-webkit-scrollbar{width:0;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+/* toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1A0A12;color:#fff;font-size:13px;padding:10px 20px;border-radius:20px;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none;}
 </style>
 </head>
 <body>
-<div class="shell" id="app">
+<div class="layout">
 
-  <!-- TOP NAV -->
-  <div class="topnav" id="topnav">
-    <button class="nav-back" id="backBtn" style="display:none" onclick="goInbox()">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="#E8547A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-    <div class="nav-avatar" id="navAvatar">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 3 14 3 8.5C3 6 5 4 7.5 4C9.24 4 10.76 4.94 12 6.09C13.24 4.94 14.76 4 16.5 4C19 4 21 6 21 8.5C21 14 12 21 12 21Z" fill="white"/></svg>
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<div class="sidebar">
+  <div class="brand">
+    <div class="brand-logo">
+      <div class="brand-heart">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M12 21C12 21 3 14 3 8.5C3 6 5 4 7.5 4C9.24 4 10.76 4.94 12 6.09C13.24 4.94 14.76 4 16.5 4C19 4 21 6 21 8.5C21 14 12 21 12 21Z" fill="white"/>
+        </svg>
+      </div>
+      <div class="brand-name">FEAR</div>
     </div>
-    <div class="nav-info">
-      <div class="nav-name" id="navName">FEAR</div>
-      <div class="nav-sub" id="navSub">Find Early · Act Responsibly</div>
-    </div>
-    <div class="nav-dot" id="statusDot" title="API status"></div>
+    <div class="brand-tagline">Find Early · Act Responsibly</div>
   </div>
 
-  <!-- PROGRESS (hidden on inbox) -->
-  <div class="prog-wrap" id="progWrap" style="display:none">
-    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
-    <div class="prog-label" id="progLabel">Step 1 of 10</div>
-  </div>
-
-  <!-- ════════════════════════════════════
-       SCREEN: INBOX
-  ════════════════════════════════════ -->
-  <div class="screen active" id="screenInbox">
-    <div class="inbox-header">
-      <h1>Messages</h1>
-      <p>Your private health conversations</p>
+  <div class="sidebar-nav">
+    <div class="nav-item active" id="navHome" onclick="showHome()">
+      <div class="nav-icon">🏠</div> Home
     </div>
-    <div class="inbox-scroll">
-
-      <div class="fear-banner">
-        <div class="fear-banner-icon">🌸</div>
-        <div>
-          <h3>Welcome to FEAR</h3>
-          <p>Find Early, Act Responsibly. Start your breast health assessment — private, guided, and judgment-free.</p>
-        </div>
-      </div>
-
-      <div class="inbox-section-label">Main chats</div>
-
-      <div class="chat-item" onclick="openChat('assessment')">
-        <div class="chat-icon ci-pink">🔍</div>
-        <div class="chat-meta">
-          <div class="chat-meta-title">Breast Health Assessment</div>
-          <div class="chat-meta-preview" id="assessPreview">Tap to begin your guided check-in →</div>
-        </div>
-        <div class="chat-meta-time" id="assessTime"></div>
-        <div class="chat-unread" id="assessDot"></div>
-      </div>
-
-      <div class="chat-item" id="followupItem" onclick="openChat('followup')" style="opacity:0.45;pointer-events:none;">
-        <div class="chat-icon ci-teal">🕐</div>
-        <div class="chat-meta">
-          <div class="chat-meta-title">Follow-up & Reminders</div>
-          <div class="chat-meta-preview" id="followupPreview">Complete assessment to unlock</div>
-        </div>
-        <div class="chat-meta-time" id="followupTime"></div>
-        <div class="chat-lock">🔒</div>
-      </div>
-
-      <div class="chat-item" id="reportItem" onclick="openChat('report')" style="opacity:0.45;pointer-events:none;">
-        <div class="chat-icon ci-amber">📋</div>
-        <div class="chat-meta">
-          <div class="chat-meta-title">My Health Report</div>
-          <div class="chat-meta-preview" id="reportPreview">Your risk summary will appear here</div>
-        </div>
-        <div class="chat-meta-time" id="reportTime"></div>
-        <div class="chat-lock">🔒</div>
-      </div>
-
-      <div class="inbox-section-label" id="smartLabel" style="display:none">Smart reminders</div>
-      <div id="smartChats"></div>
-
+    <div class="nav-item" id="navInsights" onclick="toast('Insights — coming soon')">
+      <div class="nav-icon">📊</div> Insights
+    </div>
+    <div class="nav-item" id="navHistory" onclick="toast('History — coming soon')">
+      <div class="nav-icon">📁</div> History
+    </div>
+    <div class="nav-item" id="navSettings" onclick="toast('Settings — coming soon')">
+      <div class="nav-icon">⚙️</div> Settings
     </div>
   </div>
 
-  <!-- ════════════════════════════════════
-       SCREEN: ASSESSMENT CHAT
-  ════════════════════════════════════ -->
-  <div class="screen" id="screenChat">
-    <div class="chat-scroll" id="chatScroll"></div>
-    <div class="options-area" id="optionsArea"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Conversations</div>
+
+    <div class="chat-row" id="crAssess" onclick="openChat('assess')">
+      <div class="cr-icon cr-pink">🔍</div>
+      <div class="cr-info">
+        <div class="cr-title">Breast Health Assessment</div>
+        <div class="cr-preview" id="crAssessPreview">Tap to begin your check-in</div>
+      </div>
+      <div class="cr-badge" id="crAssessBadge"></div>
+    </div>
+
+    <div class="chat-row locked" id="crFollowup" onclick="openChat('followup')">
+      <div class="cr-icon cr-teal">🕐</div>
+      <div class="cr-info">
+        <div class="cr-title">Follow-up & Reminders</div>
+        <div class="cr-preview" id="crFollowupPreview">Complete assessment to unlock</div>
+      </div>
+      <div class="cr-lock" id="crFollowupLock">🔒</div>
+    </div>
+
+    <div class="chat-row locked" id="crReport" onclick="openChat('report')">
+      <div class="cr-icon cr-amber">📋</div>
+      <div class="cr-info">
+        <div class="cr-title">My Health Report</div>
+        <div class="cr-preview" id="crReportPreview">Your risk summary will appear here</div>
+      </div>
+      <div class="cr-lock" id="crReportLock">🔒</div>
+    </div>
+
+    <div id="smartRows"></div>
   </div>
 
-  <!-- ════════════════════════════════════
-       SCREEN: FOLLOW-UP CHAT
-  ════════════════════════════════════ -->
-  <div class="screen" id="screenFollowup">
-    <div class="chat-scroll" id="followupScroll"></div>
-  </div>
-
-  <!-- ════════════════════════════════════
-       SCREEN: REPORT CHAT
-  ════════════════════════════════════ -->
-  <div class="screen" id="screenReport">
-    <div class="chat-scroll" id="reportScroll"></div>
-  </div>
-
-  <!-- BOTTOM TAB BAR -->
-  <div class="tabbar">
-    <button class="tab-btn active" id="tabMessages" onclick="switchTab('messages')">
-      <div class="tab-icon">💬</div>
-      <div class="tab-label">Messages</div>
-    </button>
-    <button class="tab-btn" id="tabInsights" onclick="switchTab('insights')">
-      <div class="tab-icon">📊</div>
-      <div class="tab-label">Insights</div>
-    </button>
-    <button class="tab-btn" id="tabHistory" onclick="switchTab('history')">
-      <div class="tab-icon">📁</div>
-      <div class="tab-label">History</div>
-    </button>
-    <button class="tab-btn" id="tabSettings" onclick="switchTab('settings')">
-      <div class="tab-icon">⚙️</div>
-      <div class="tab-label">Settings</div>
-    </button>
+  <div class="sidebar-footer">
+    <div class="api-dot" id="apiDot"></div>
+    <div class="api-label" id="apiLabel">Checking model…</div>
   </div>
 </div>
 
+<!-- ══════════════ MAIN ══════════════ -->
+<div class="main">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-icon" id="tbIcon">🌸</div>
+    <div class="topbar-info">
+      <div class="topbar-title" id="tbTitle">FEAR — Find Early, Act Responsibly</div>
+      <div class="topbar-sub" id="tbSub">Select a conversation to begin</div>
+    </div>
+    <div class="prog-wrap" id="progWrap" style="display:none">
+      <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+      <div class="prog-txt" id="progTxt">Step 1 of 10</div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content" id="content">
+
+    <!-- HOME PANEL -->
+    <div id="panelHome" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+      <div class="home-panel">
+        <div class="home-hero">
+          <div class="hero-text">
+            <h1>Early detection<br>starts with <em>you.</em></h1>
+            <p>FEAR guides you through a private, judgment-free breast health assessment using a real machine learning model trained on clinical data. No doctor visits needed to get started.</p>
+            <button class="hero-cta" onclick="openChat('assess')">Start your assessment →</button>
+          </div>
+          <div class="hero-illust">
+            <svg width="160" height="160" viewBox="0 0 160 160" fill="none">
+              <circle cx="80" cy="80" r="70" fill="#FDEEF3"/>
+              <ellipse cx="80" cy="90" rx="38" ry="30" fill="#F5B8CC" opacity=".5"/>
+              <ellipse cx="80" cy="88" rx="34" ry="28" fill="none" stroke="#E8547A" stroke-width="2"/>
+              <circle cx="65" cy="88" r="9" fill="#F5B8CC"/>
+              <circle cx="95" cy="88" r="9" fill="#F5B8CC"/>
+              <circle cx="65" cy="88" r="4" fill="#E8547A" opacity=".6"/>
+              <circle cx="95" cy="88" r="4" fill="#E8547A" opacity=".6"/>
+              <path d="M55 68c0-13.8 11.2-25 25-25s25 11.2 25 25" stroke="#E8547A" stroke-width="2" stroke-linecap="round" fill="none"/>
+              <circle cx="80" cy="38" r="6" fill="#E8547A" opacity=".3"/>
+              <path d="M60 118 Q80 128 100 118" stroke="#E8547A" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".4"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="cards-grid">
+          <div class="stat-card">
+            <div class="sc-icon">🎯</div>
+            <div class="sc-val" id="scAccuracy">~97%</div>
+            <div class="sc-label">Model accuracy on test data</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-icon">🔒</div>
+            <div class="sc-val">Private</div>
+            <div class="sc-label">Nothing is stored or shared</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-icon">⏱️</div>
+            <div class="sc-val">3 min</div>
+            <div class="sc-label">Average assessment time</div>
+          </div>
+        </div>
+
+        <div style="font-size:12px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">Your conversations</div>
+        <div class="quick-chats">
+          <div class="qc-card" onclick="openChat('assess')">
+            <div class="qc-icon" style="background:var(--pink-light)">🔍</div>
+            <div class="qc-title">Breast Health Assessment</div>
+            <div class="qc-desc">10 guided questions with illustrated options. Your answers go directly into your trained ML model.</div>
+            <span class="qc-badge badge-new" id="qcAssessBadge">Start now</span>
+          </div>
+          <div class="qc-card locked-card" id="qcFollowup" onclick="lockedClick()">
+            <div class="qc-icon" style="background:var(--teal-light)">🕐</div>
+            <div class="qc-title">Follow-up & Reminders</div>
+            <div class="qc-desc">Smart reminders based on your risk level. Personalised check-in schedule set after your first assessment.</div>
+            <span class="qc-badge badge-lock" id="qcFollowupBadge">🔒 Locked</span>
+          </div>
+          <div class="qc-card locked-card" id="qcReport" onclick="lockedClick()">
+            <div class="qc-icon" style="background:var(--amber-light)">📋</div>
+            <div class="qc-title">My Health Report</div>
+            <div class="qc-desc">Full risk summary, model confidence score, and all your answers in one place.</div>
+            <span class="qc-badge badge-lock" id="qcReportBadge">🔒 Locked</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ASSESS CHAT -->
+    <div id="panelAssess" style="display:none;flex-direction:column;flex:1;overflow:hidden;">
+      <div class="chat-messages" id="assessScroll"></div>
+      <div class="options-panel" id="optionsPanel"></div>
+    </div>
+
+    <!-- FOLLOWUP CHAT -->
+    <div id="panelFollowup" style="display:none;flex-direction:column;flex:1;overflow:hidden;">
+      <div class="chat-messages" id="followupScroll"></div>
+    </div>
+
+    <!-- REPORT CHAT -->
+    <div id="panelReport" style="display:none;flex-direction:column;flex:1;overflow:hidden;">
+      <div class="chat-messages" id="reportScroll"></div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toastEl"></div>
+
 <script>
-/* ═══════════════════════════════════════════════════
+/* ══════════════════════════════════════
    CONFIG
-═══════════════════════════════════════════════════ */
+══════════════════════════════════════ */
 var API = 'http://127.0.0.1:5000';
-var STEPS = 10;
+var TOTAL = 10;
 
-/* ═══════════════════════════════════════════════════
-   ASSESSMENT STEPS — with Flo-style visual options
-═══════════════════════════════════════════════════ */
+/* ══════════════════════════════════════
+   STEPS
+══════════════════════════════════════ */
 var steps = [
-
-  /* 0 — Welcome */
   { id:'welcome', sn:1,
-    bot:"Hi there 🌸 I'm FEAR — Find Early, Act Responsibly. I'll guide you through a private breast health check-in. Everything stays between us.",
-    optType:'single', single:"I understand and accept" },
+    bot:"Hi there 🌸 I'm FEAR — Find Early, Act Responsibly. I'll guide you through a private breast health check-in. Everything you share stays completely between us.",
+    type:'single', single:"I understand and accept" },
 
-  /* 1 — Age: illustrated age circles */
-  { id:'age', sn:2,
-    bot:"First, let's talk about you. How old are you?",
-    optType:'illust', cols:2, multi:false,
-    opts:[
-      { emoji:'🌱', label:'Under 30', val:0 },
-      { emoji:'🌸', label:'30 – 39', val:1 },
-      { emoji:'🌺', label:'40 – 49', val:2 },
-      { emoji:'🌻', label:'50 or older', val:3 }
-    ]},
+  { id:'age', sn:2, bot:"How old are you? Age is one of the most important risk factors for breast health.",
+    type:'illust', multi:false,
+    opts:[{e:'🌱',l:'Under 30',v:0},{e:'🌸',l:'30 – 39',v:1},{e:'🌺',l:'40 – 49',v:2},{e:'🌻',l:'50 or older',v:3}]},
 
-  /* 2 — Symptoms: body-part illustrations */
   { id:'symptoms', sn:3,
     bot:"Have you noticed anything unusual recently? Select all that apply.",
-    botNote:"Common early signs include lumps, skin texture changes, or nipple discharge.",
-    optType:'illust', cols:2, multi:true,
+    note:"Early signs can include lumps, skin changes, or nipple changes. It is okay if you have not noticed anything.",
+    type:'illust', multi:true,
     opts:[
-      { svg:'lump',     label:'Lump or thickening', val:4 },
-      { svg:'skin',     label:'Skin dimpling', val:3 },
-      { svg:'nipple',   label:'Nipple change', val:3 },
-      { svg:'pain',     label:'Breast pain', val:2 },
-      { svg:'swelling', label:'Swelling or warmth', val:2 },
-      { svg:'none',     label:'No changes', val:0 }
+      {s:'lump',l:'Lump or thickening',v:4},{s:'skin',l:'Skin dimpling',v:3},
+      {s:'nipple',l:'Nipple change',v:3},{s:'pain',l:'Breast pain',v:2},
+      {s:'swelling',l:'Swelling or warmth',v:2},{s:'none',l:'No changes noticed',v:0}
     ]},
 
-  /* 3 — Location: Flo-style body diagram */
-  { id:'location', sn:4,
-    bot:"If you noticed anything, where is it located?",
-    optType:'body', cols:4, multi:false,
+  { id:'location', sn:4, bot:"If you noticed any changes, where are they located?",
+    type:'body', multi:false,
     opts:[
-      { svg:'upperOuter', label:'Upper outer', val:1 },
-      { svg:'upperInner', label:'Upper inner', val:1 },
-      { svg:'lowerOuter', label:'Lower outer', val:1 },
-      { svg:'lowerInner', label:'Lower inner', val:1 },
-      { svg:'nippleArea', label:'Nipple area', val:2 },
-      { svg:'underArm',   label:'Under arm', val:2 },
-      { svg:'both',       label:'Both sides', val:2 },
-      { svg:'noLoc',      label:'Not sure', val:0 }
+      {s:'upperOuter',l:'Upper outer',v:1},{s:'upperInner',l:'Upper inner',v:1},
+      {s:'lowerOuter',l:'Lower outer',v:1},{s:'lowerInner',l:'Lower inner',v:1},
+      {s:'nippleArea',l:'Nipple area',v:2},{s:'underArm',l:'Under arm',v:2},
+      {s:'both',l:'Both sides',v:2},{s:'noLoc',l:'Not sure',v:0}
     ]},
 
-  /* 4 — Duration */
-  { id:'duration', sn:5,
-    bot:"How long have you noticed these changes?",
-    optType:'illust', cols:2, multi:false,
-    opts:[
-      { emoji:'⚡', label:'Just noticed', val:2 },
-      { emoji:'📅', label:'1 – 4 weeks', val:3 },
-      { emoji:'🗓️', label:'Over a month', val:4 },
-      { emoji:'✨', label:'No changes', val:0 }
-    ]},
+  { id:'duration', sn:5, bot:"How long have you been aware of any changes?",
+    type:'illust', multi:false,
+    opts:[{e:'⚡',l:'Just noticed',v:2},{e:'📅',l:'1 – 4 weeks',v:3},{e:'🗓️',l:'Over a month',v:4},{e:'✨',l:'No changes',v:0}]},
 
-  /* 5 — Family history */
   { id:'family', sn:6,
     bot:"Has any close family member been diagnosed with breast or ovarian cancer?",
-    botNote:"Mother, sister, grandmother, or daughter counts as close family.",
-    optType:'illust', cols:2, multi:false,
-    opts:[
-      { emoji:'👩', label:'Yes, one person', val:2 },
-      { emoji:'👨‍👩‍👧', label:'More than one', val:4 },
-      { emoji:'❓', label:'Not that I know', val:0 },
-      { emoji:'🤷', label:'Unsure', val:1 }
-    ]},
+    note:"Mother, sister, grandmother, or daughter counts as a close family member.",
+    type:'illust', multi:false,
+    opts:[{e:'👩',l:'Yes, one person',v:2},{e:'👨‍👩‍👧',l:'More than one',v:4},{e:'✅',l:'Not that I know',v:0},{e:'🤷',l:'Unsure',v:1}]},
 
-  /* 6 — Last screening */
-  { id:'screening', sn:7,
-    bot:"When did you last have a breast exam or mammogram with a doctor?",
-    optType:'illust', cols:2, multi:false,
-    opts:[
-      { emoji:'✅', label:'Within last year', val:0 },
-      { emoji:'🕐', label:'1 – 2 years ago', val:1 },
-      { emoji:'⏳', label:'More than 2 years', val:2 },
-      { emoji:'🔴', label:'Never had one', val:3 }
-    ]},
+  { id:'screening', sn:7, bot:"When did you last have a breast exam or mammogram with a doctor?",
+    type:'illust', multi:false,
+    opts:[{e:'✅',l:'Within last year',v:0},{e:'🕐',l:'1 – 2 years ago',v:1},{e:'⏳',l:'Over 2 years ago',v:2},{e:'🔴',l:'Never had one',v:3}]},
 
-  /* 7 — Self exam */
-  { id:'selfexam', sn:8,
-    bot:"Do you perform monthly breast self-exams at home?",
-    optType:'illust', cols:3, multi:false,
-    opts:[
-      { emoji:'✅', label:'Yes, monthly', val:0 },
-      { emoji:'🔄', label:'Sometimes', val:1 },
-      { emoji:'❌', label:'Never', val:2 }
-    ]},
+  { id:'selfexam', sn:8, bot:"Do you perform monthly breast self-exams at home?",
+    type:'illust', multi:false,
+    opts:[{e:'✅',l:'Yes, monthly',v:0},{e:'🔄',l:'Sometimes',v:1},{e:'❌',l:'Never',v:2}]},
 
-  /* 8 — Lifestyle */
-  { id:'lifestyle', sn:9,
-    bot:"Do any of these apply to your lifestyle? Select all that apply.",
-    optType:'illust', cols:2, multi:true,
-    opts:[
-      { emoji:'🚬', label:'I smoke', val:2 },
-      { emoji:'🍷', label:'High alcohol', val:2 },
-      { emoji:'🛋️', label:'Mostly sedentary', val:1 },
-      { emoji:'⚖️', label:'Obesity / overweight', val:2 },
-      { emoji:'🌿', label:'None of these', val:0 }
-    ]},
+  { id:'lifestyle', sn:9, bot:"Do any of these apply to your lifestyle? Select all that apply.",
+    type:'illust', multi:true,
+    opts:[{e:'🚬',l:'I smoke',v:2},{e:'🍷',l:'High alcohol',v:2},{e:'🛋️',l:'Mostly sedentary',v:1},{e:'⚖️',l:'Obesity / overweight',v:2},{e:'🌿',l:'None of these',v:0}]},
 
-  /* 9 — Stress / mental */
-  { id:'stress', sn:10,
-    bot:"Last one. How would you describe your current stress level?",
-    optType:'illust', cols:3, multi:false,
-    opts:[
-      { emoji:'😌', label:'Low stress', val:0 },
-      { emoji:'😐', label:'Moderate', val:1 },
-      { emoji:'😰', label:'High stress', val:2 }
-    ]}
+  { id:'stress', sn:10, bot:"Last one. How would you describe your current overall stress level?",
+    type:'illust', multi:false,
+    opts:[{e:'😌',l:'Low',v:0},{e:'😐',l:'Moderate',v:1},{e:'😰',l:'High',v:2}]}
 ];
 
-/* ═══════════════════════════════════════════════════
+/* ══════════════════════════════════════
    STATE
-═══════════════════════════════════════════════════ */
-var curStep = 0, totalScore = 0;
-var answers = [];
-var selectedVals = [];
-var savedResult = null;
+══════════════════════════════════════ */
+var cur=0, score=0, answers=[], selVals=[], savedResult=null;
+var assessStarted = false;
 
-/* ═══════════════════════════════════════════════════
-   SVG ILLUSTRATIONS for symptom cards
-═══════════════════════════════════════════════════ */
-function symptomSVG(id) {
-  var svgs = {
-    lump:`<svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="20" r="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.5"/><circle cx="18" cy="20" r="5" fill="#F5B8CC"/><circle cx="15" cy="17" r="1.5" fill="#E8547A" opacity=".5"/></svg>`,
-    skin:`<svg width="36" height="36" viewBox="0 0 36 36"><ellipse cx="18" cy="20" rx="10" ry="8" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.5"/><path d="M14 18 Q18 14 22 18" stroke="#E8547A" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M13 22 Q18 26 23 22" stroke="#E8547A" stroke-width="1" fill="none" stroke-linecap="round" opacity=".5"/></svg>`,
-    nipple:`<svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="20" r="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.5"/><circle cx="18" cy="20" r="3" fill="#E8547A"/><path d="M18 16v-4M18 28v-2" stroke="#E8547A" stroke-width="1.5" stroke-linecap="round" opacity=".6"/></svg>`,
-    pain:`<svg width="36" height="36" viewBox="0 0 36 36"><ellipse cx="18" cy="21" rx="11" ry="9" fill="#FFE8EE" stroke="#E8547A" stroke-width="1.5"/><path d="M15 18l2 3 4-5" stroke="#E8547A" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/></svg>`,
-    swelling:`<svg width="36" height="36" viewBox="0 0 36 36"><ellipse cx="18" cy="21" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.5"/><ellipse cx="18" cy="21" rx="8" ry="6" fill="#F5B8CC" opacity=".5"/></svg>`,
-    none:`<svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="12" fill="#E8F5E9" stroke="#66BB6A" stroke-width="1.5"/><path d="M13 18l3.5 3.5 7-7" stroke="#43A047" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-    upperOuter:`<svg width="34" height="34" viewBox="0 0 34 34"><ellipse cx="17" cy="20" rx="11" ry="9" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="22" cy="15" rx="5" ry="4" fill="#F5B8CC"/></svg>`,
-    upperInner:`<svg width="34" height="34" viewBox="0 0 34 34"><ellipse cx="17" cy="20" rx="11" ry="9" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="12" cy="15" rx="5" ry="4" fill="#F5B8CC"/></svg>`,
-    lowerOuter:`<svg width="34" height="34" viewBox="0 0 34 34"><ellipse cx="17" cy="20" rx="11" ry="9" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="22" cy="23" rx="5" ry="3.5" fill="#F5B8CC"/></svg>`,
-    lowerInner:`<svg width="34" height="34" viewBox="0 0 34 34"><ellipse cx="17" cy="20" rx="11" ry="9" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="12" cy="23" rx="5" ry="3.5" fill="#F5B8CC"/></svg>`,
-    nippleArea:`<svg width="34" height="34" viewBox="0 0 34 34"><ellipse cx="17" cy="20" rx="11" ry="9" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><circle cx="17" cy="20" r="3.5" fill="#E8547A"/></svg>`,
-    underArm:`<svg width="34" height="34" viewBox="0 0 34 34"><ellipse cx="17" cy="20" rx="11" ry="9" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="28" cy="16" rx="4" ry="3" fill="#F5B8CC"/></svg>`,
-    both:`<svg width="34" height="34" viewBox="0 0 34 34"><ellipse cx="11" cy="20" rx="8" ry="7" fill="#F5B8CC" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="23" cy="20" rx="8" ry="7" fill="#F5B8CC" stroke="#E8547A" stroke-width="1.2"/></svg>`,
-    noLoc:`<svg width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="12" fill="#F6F6F6" stroke="#CCC" stroke-width="1.2"/><text x="17" y="22" text-anchor="middle" font-size="13" fill="#999">?</text></svg>`
+/* ══════════════════════════════════════
+   SVGs
+══════════════════════════════════════ */
+function svg(id){
+  var m={
+    lump:'<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="22" r="12" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.5"/><circle cx="20" cy="22" r="6" fill="#F5B8CC"/><circle cx="17" cy="19" r="2" fill="#E8547A" opacity=".4"/></svg>',
+    skin:'<svg width="40" height="40" viewBox="0 0 40 40"><ellipse cx="20" cy="22" rx="12" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.5"/><path d="M15 20 Q20 15 25 20" stroke="#E8547A" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M14 25 Q20 29 26 25" stroke="#E8547A" stroke-width="1" fill="none" opacity=".5" stroke-linecap="round"/></svg>',
+    nipple:'<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="22" r="12" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.5"/><circle cx="20" cy="22" r="4" fill="#E8547A"/><path d="M20 17v-4M20 31v-3" stroke="#E8547A" stroke-width="1.5" stroke-linecap="round" opacity=".5"/></svg>',
+    pain:'<svg width="40" height="40" viewBox="0 0 40 40"><ellipse cx="20" cy="23" rx="13" ry="10" fill="#FFE8EE" stroke="#E8547A" stroke-width="1.5"/><path d="M17 20l2.5 3.5 5-6" stroke="#E8547A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/></svg>',
+    swelling:'<svg width="40" height="40" viewBox="0 0 40 40"><ellipse cx="20" cy="23" rx="15" ry="11" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.5"/><ellipse cx="20" cy="23" rx="9" ry="6.5" fill="#F5B8CC" opacity=".5"/></svg>',
+    none:'<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" fill="#E8F5E9" stroke="#66BB6A" stroke-width="1.5"/><path d="M14 20l4 4 8-8" stroke="#43A047" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    upperOuter:'<svg width="38" height="38" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="25" cy="16" rx="6" ry="5" fill="#F5B8CC"/></svg>',
+    upperInner:'<svg width="38" height="38" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="13" cy="16" rx="6" ry="5" fill="#F5B8CC"/></svg>',
+    lowerOuter:'<svg width="38" height="38" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="25" cy="26" rx="6" ry="4" fill="#F5B8CC"/></svg>',
+    lowerInner:'<svg width="38" height="38" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="13" cy="26" rx="6" ry="4" fill="#F5B8CC"/></svg>',
+    nippleArea:'<svg width="38" height="38" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><circle cx="19" cy="22" r="4" fill="#E8547A"/></svg>',
+    underArm:'<svg width="38" height="38" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="31" cy="17" rx="5" ry="4" fill="#F5B8CC"/></svg>',
+    both:'<svg width="38" height="38" viewBox="0 0 38 38"><ellipse cx="12" cy="22" rx="9" ry="8" fill="#F5B8CC" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="26" cy="22" rx="9" ry="8" fill="#F5B8CC" stroke="#E8547A" stroke-width="1.2"/></svg>',
+    noLoc:'<svg width="38" height="38" viewBox="0 0 38 38"><circle cx="19" cy="19" r="14" fill="#F6F6F6" stroke="#DDD" stroke-width="1.2"/><text x="19" y="24" text-anchor="middle" font-size="14" fill="#AAA">?</text></svg>'
   };
-  return svgs[id] || '';
+  return m[id]||'';
 }
 
-/* ═══════════════════════════════════════════════════
+/* ══════════════════════════════════════
    RENDER OPTIONS
-═══════════════════════════════════════════════════ */
-function renderOptions(step) {
-  var area = document.getElementById('optionsArea');
-  area.innerHTML = '';
-  selectedVals = [];
+══════════════════════════════════════ */
+function renderOptions(step){
+  var p = document.getElementById('optionsPanel');
+  p.innerHTML=''; selVals=[];
 
-  if (step.optType === 'single') {
-    var btn = document.createElement('button');
-    btn.className = 'single-opt';
-    btn.textContent = step.single;
-    btn.onclick = function() { submitSingle(step.single, 0); };
-    area.appendChild(btn);
-    return;
+  if(step.type==='single'){
+    var b=document.createElement('button'); b.className='single-btn';
+    b.textContent=step.single;
+    b.onclick=function(){ submitSingle(step.single,0); };
+    p.appendChild(b); return;
   }
 
-  if (step.optType === 'illust' || step.optType === 'body') {
-    var lbl = document.createElement('div');
-    lbl.className = 'options-label';
-    lbl.textContent = step.multi ? 'Select all that apply · then tap Send' : 'Select one option';
-    area.appendChild(lbl);
+  var hint=document.createElement('div'); hint.className='opt-hint';
+  hint.textContent=step.multi?'Select all that apply, then click Send':'Select one option below';
+  p.appendChild(hint);
 
-    var grid = document.createElement('div');
-    grid.className = 'illust-grid cols' + step.cols;
+  var isBody=(step.type==='body');
+  var grid=document.createElement('div');
+  grid.className=isBody?'body-grid':'illust-grid';
 
-    step.opts.forEach(function(opt, i) {
-      var card = document.createElement('div');
-      card.className = 'illust-card';
-      card.dataset.idx = i;
-      card.dataset.val = opt.val;
-      card.dataset.label = opt.label;
-
-      var iconHTML = '';
-      if (opt.svg) {
-        iconHTML = symptomSVG(opt.svg);
-      } else if (opt.emoji) {
-        iconHTML = '<div class="ic-emoji">' + opt.emoji + '</div>';
+  step.opts.forEach(function(opt){
+    var card=document.createElement('div');
+    card.className=isBody?'body-card':'illust-card';
+    card.dataset.val=opt.v; card.dataset.label=opt.l;
+    var icon = opt.s ? svg(opt.s) : '<div class="ic-emoji">'+(opt.e||'')+'</div>';
+    card.innerHTML=icon+'<div class="ic-label">'+opt.l+'</div>';
+    card.onclick=function(){
+      if(step.multi){
+        card.classList.toggle('selected');
+        if(card.classList.contains('selected')) selVals.push({v:parseInt(opt.v),l:opt.l});
+        else selVals=selVals.filter(function(x){return x.l!==opt.l;});
+        sb.disabled=selVals.length===0;
+      } else {
+        grid.querySelectorAll('.illust-card,.body-card').forEach(function(c){c.classList.remove('selected');});
+        card.classList.add('selected');
+        selVals=[{v:parseInt(opt.v),l:opt.l}];
+        sb.disabled=false;
       }
+    };
+    grid.appendChild(card);
+  });
+  p.appendChild(grid);
 
-      card.innerHTML = iconHTML + '<div class="ic-label">' + opt.label + '</div>';
-
-      card.onclick = function() {
-        if (step.multi) {
-          card.classList.toggle('selected');
-          var v = parseInt(card.dataset.val);
-          var lbl2 = card.dataset.label;
-          if (card.classList.contains('selected')) {
-            selectedVals.push({ val: v, label: lbl2 });
-          } else {
-            selectedVals = selectedVals.filter(function(x){ return x.label !== lbl2; });
-          }
-          sendBtn.disabled = selectedVals.length === 0;
-        } else {
-          grid.querySelectorAll('.illust-card').forEach(function(c){ c.classList.remove('selected'); });
-          card.classList.add('selected');
-          selectedVals = [{ val: parseInt(card.dataset.val), label: card.dataset.label }];
-          sendBtn.disabled = false;
-        }
-      };
-      grid.appendChild(card);
-    });
-    area.appendChild(grid);
-
-    var sendBtn = document.createElement('button');
-    sendBtn.className = 'send-btn';
-    sendBtn.textContent = 'Send';
-    sendBtn.disabled = true;
-    sendBtn.onclick = function() { submitIllust(step); };
-    area.appendChild(sendBtn);
-    return;
-  }
+  var row=document.createElement('div'); row.className='send-row';
+  var sb=document.createElement('button'); sb.className='send-btn';
+  sb.textContent='Send'; sb.disabled=true;
+  sb.onclick=function(){ submitMulti(step); };
+  row.appendChild(sb); p.appendChild(row);
 }
 
-function submitSingle(label, val) {
+function submitSingle(label,val){
   appendUser(label);
-  document.getElementById('optionsArea').innerHTML = '';
-  answers.push({ q: steps[curStep].id, a: label });
-  totalScore += val;
-  curStep++;
-  updateProg();
-  nextStep();
+  document.getElementById('optionsPanel').innerHTML='';
+  answers.push({q:steps[cur].id,a:label});
+  score+=val; cur++; updateProg(); next();
 }
-
-function submitIllust(step) {
-  if (selectedVals.length === 0) return;
-  var labels = selectedVals.map(function(x){ return x.label; }).join(', ');
-  var scoreAdd = 0;
-  selectedVals.forEach(function(x){ scoreAdd += x.val; });
+function submitMulti(step){
+  if(!selVals.length) return;
+  var labels=selVals.map(function(x){return x.l;}).join(', ');
+  var add=0; selVals.forEach(function(x){add+=x.v;});
   appendUser(labels);
-  document.getElementById('optionsArea').innerHTML = '';
-  answers.push({ q: step.id, a: labels });
-  totalScore += scoreAdd;
-  curStep++;
-  updateProg();
-  nextStep();
+  document.getElementById('optionsPanel').innerHTML='';
+  answers.push({q:step.id,a:labels});
+  score+=add; cur++; updateProg(); next();
 }
 
-/* ═══════════════════════════════════════════════════
-   STEP FLOW
-═══════════════════════════════════════════════════ */
-function nextStep() {
-  if (curStep < steps.length) {
-    var s = steps[curStep];
-    showTyping(function(){
-      appendBot(s.bot);
-      if (s.botNote) {
-        setTimeout(function(){
-          var noteRow = document.createElement('div');
-          noteRow.className = 'msg-bot-row';
-          noteRow.innerHTML = '<div style="width:28px;flex-shrink:0"></div><div class="bubble bot" style="font-size:12px;color:#9A6075;background:#FBF4F7;border:1px solid var(--border);">' + s.botNote + '</div>';
-          document.getElementById('chatScroll').appendChild(noteRow);
-          scrollChat();
-        }, 400);
-      }
+/* ══════════════════════════════════════
+   FLOW
+══════════════════════════════════════ */
+function next(){
+  if(cur<steps.length){
+    var s=steps[cur];
+    typing('assess',function(){
+      appendBot(s.bot,'assess');
+      if(s.note) setTimeout(function(){
+        var scr=document.getElementById('assessScroll');
+        var r=document.createElement('div'); r.className='msg-row';
+        r.innerHTML='<div style="width:32px;flex-shrink:0"></div><div class="bubble note">'+s.note+'</div>';
+        scr.appendChild(r); scrollTo('assessScroll');
+      },350);
       renderOptions(s);
     });
-  } else {
-    showResult();
-  }
+  } else { showResult(); }
 }
 
-function updateProg() {
-  if (curStep === 0) return;
-  var pct = Math.round((curStep / STEPS) * 100);
-  document.getElementById('progFill').style.width = pct + '%';
-  document.getElementById('progLabel').textContent = 'Step ' + Math.min(curStep+1, STEPS) + ' of ' + STEPS;
+function updateProg(){
+  var pct=Math.round((cur/TOTAL)*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progTxt').textContent='Step '+(Math.min(cur+1,TOTAL))+' of '+TOTAL;
 }
 
-/* ═══════════════════════════════════════════════════
+/* ══════════════════════════════════════
    RESULT
-═══════════════════════════════════════════════════ */
-function getRiskContent(level) {
+══════════════════════════════════════ */
+function getRisk(lv){
   return {
-    low:{ title:'Your risk appears low right now', body:'Based on your responses, your profile aligns with lower-risk patterns. Keep up regular self-checks and annual visits.',
-      actions:['Do a breast self-exam monthly at home','Schedule an annual clinical check-up','Check back with FEAR in 6 months'] },
-    medium:{ title:'Some factors worth monitoring', body:'A few responses suggest speaking to a healthcare provider within the next few weeks. Not urgent, but timely attention matters.',
-      actions:['Book a clinical breast exam within 4 weeks','Share your family history with your doctor','Consider a mammogram if you are 40 or older'] },
-    high:{ title:'Please see a doctor soon', body:'Your responses indicate patterns that need prompt professional attention. Please act this week — early detection changes outcomes.',
-      actions:['Contact a doctor or breast clinic this week','Do not let fear delay you — early action saves lives','Bring someone you trust with you'] }
-  }[level];
+    low:{title:'Your risk appears low right now',body:'Based on your responses, your profile aligns with lower-risk patterns. Keep up regular self-checks and annual clinical visits.',
+      actions:['Perform a breast self-exam once a month at home','Schedule an annual check-up with your doctor','Check back in 6 months — I will remind you']},
+    medium:{title:'Some factors worth monitoring',body:'A few of your responses suggest speaking to a healthcare provider within the next few weeks. Not urgent, but timely attention matters.',
+      actions:['Book a clinical breast exam within 4 weeks','Share your family history with your doctor','Consider a mammogram if you are 40 or older']},
+    high:{title:'Please see a doctor soon',body:'Your responses indicate patterns that need prompt professional attention. This is not a diagnosis — but please act this week.',
+      actions:['Contact a doctor or breast clinic this week','Do not let fear delay you — early detection changes outcomes','Bring someone you trust with you']}
+  }[lv];
 }
 
-function getFollowupDays(level) {
-  return level === 'low' ? 180 : level === 'medium' ? 28 : 7;
-}
+function showResult(){
+  var scr=document.getElementById('assessScroll');
+  document.getElementById('optionsPanel').innerHTML='';
+  typing('assess',function(){
+    appendBot("Thank you for trusting me with this 🌸 Analysing your responses now…",'assess');
+    var lr=document.createElement('div'); lr.className='msg-row'; lr.id='loadRow';
+    lr.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot"><span style="font-size:13px;color:var(--text3);font-style:italic">Your trained model is calculating risk…</span></div>';
+    scr.appendChild(lr); scrollTo('assessScroll');
 
-function showResult() {
-  var chatScroll = document.getElementById('chatScroll');
-  document.getElementById('optionsArea').innerHTML = '';
-  showTyping(function(){
-    appendBot("Thank you for trusting me with this 🌸 Let me analyse your responses…");
-
-    var loadRow = document.createElement('div');
-    loadRow.className = 'msg-bot-row'; loadRow.id = 'loadRow';
-    loadRow.innerHTML = '<div class="msg-avatar">🌸</div><div class="bubble bot"><span style="font-size:12px;color:#B8899C;font-style:italic">Calculating risk from your trained model…</span></div>';
-    chatScroll.appendChild(loadRow);
-    scrollChat();
-
-    fetch(API + '/predict', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ answers:answers, score:totalScore })
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      var lr = document.getElementById('loadRow'); if(lr) lr.remove();
-      if(data.error){ showFallback(); return; }
-      renderResult(data.risk_level, data.malignant_prob, data.guidance);
-    })
-    .catch(function(){
-      var lr = document.getElementById('loadRow'); if(lr) lr.remove();
-      showFallback();
+    fetch(API+'/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({answers:answers,score:score})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var l=document.getElementById('loadRow'); if(l) l.remove();
+      if(d.error){fallback();return;}
+      renderResult(d.risk_level,d.malignant_prob,d.guidance);
+    }).catch(function(){
+      var l=document.getElementById('loadRow'); if(l) l.remove();
+      fallback();
     });
-  }, 1000);
+  },900);
 }
 
-function renderResult(level, prob, guidance) {
-  var chatScroll = document.getElementById('chatScroll');
-  var content = getRiskContent(level);
-  savedResult = { level:level, prob:prob, guidance:guidance, answers:answers, score:totalScore, date: new Date().toLocaleDateString() };
+function renderResult(lv,prob,guidance){
+  var scr=document.getElementById('assessScroll');
+  var c=getRisk(lv);
+  savedResult={lv:lv,prob:prob,guidance:guidance,answers:answers,score:score,date:new Date().toLocaleDateString()};
+  var days=lv==='low'?180:lv==='medium'?28:7;
 
-  // Risk card
-  var card = document.createElement('div');
-  card.className = 'risk-card ' + level;
-  card.innerHTML =
-    '<div class="risk-pill">'+level+' risk</div>'+
-    '<div class="risk-title">'+content.title+'</div>'+
-    '<div class="risk-body">'+content.body+'</div>'+
-    '<div class="actions-list">'+
-    content.actions.map(function(a){ return '<div class="action-item"><div class="action-dot"></div><span>'+a+'</span></div>'; }).join('')+
-    '</div>'+
-    '<div class="conf-wrap"><div class="conf-track"><div class="conf-bar" id="confBar" style="width:0%"></div></div>'+
-    '<div class="conf-text">Model confidence: '+prob+'% malignant probability</div></div>';
-  chatScroll.appendChild(card);
-  setTimeout(function(){ var b=document.getElementById('confBar'); if(b) b.style.width=prob+'%'; },300);
+  var card=document.createElement('div'); card.className='risk-card '+lv;
+  card.innerHTML=
+    '<div class="risk-pill">'+lv+' risk</div>'+
+    '<div class="risk-title">'+c.title+'</div>'+
+    '<div class="risk-body">'+c.body+'</div>'+
+    '<div class="actions-list">'+c.actions.map(function(a){return '<div class="action-item"><div class="action-dot"></div><span>'+a+'</span></div>';}).join('')+'</div>'+
+    '<div class="conf-track" style="margin-top:14px"><div class="conf-bar" id="cBar" style="width:0%"></div></div>'+
+    '<div class="conf-txt">Model confidence: '+prob+'% malignant probability</div>';
+  scr.appendChild(card);
+  setTimeout(function(){var b=document.getElementById('cBar');if(b)b.style.width=prob+'%';},300);
 
-  // AI guidance
-  var guidRow = document.createElement('div');
-  guidRow.className = 'msg-bot-row';
-  guidRow.innerHTML = '<div class="msg-avatar">🌸</div><div class="bubble bot" style="background:#FBF4F7;border:1px solid var(--border);">'+guidance+'</div>';
-  chatScroll.appendChild(guidRow);
+  var gr=document.createElement('div'); gr.className='msg-row';
+  gr.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot" style="background:#FBF4F7;border-color:var(--border2);">'+guidance+'</div>';
+  scr.appendChild(gr);
 
-  // Follow-up badge
-  var days = getFollowupDays(level);
-  var badge = document.createElement('div');
-  badge.className = 'followup-badge';
-  badge.innerHTML = '<span style="font-size:18px">🕐</span><span>Follow-up reminder set for <strong>'+days+' days</strong> from today.</span>';
-  chatScroll.appendChild(badge);
+  var badge=document.createElement('div'); badge.className='followup-badge';
+  badge.innerHTML='<span style="font-size:16px">🕐</span><span>Follow-up reminder set for <strong>'+days+' days</strong> from today.</span>';
+  scr.appendChild(badge);
 
-  // Disclaimer
-  var disc = document.createElement('p');
-  disc.className = 'disclaimer';
-  disc.textContent = 'This is not a medical diagnosis. Always consult a qualified healthcare professional.';
-  chatScroll.appendChild(disc);
+  var disc=document.createElement('p'); disc.className='disclaimer';
+  disc.textContent='This is not a medical diagnosis. Always consult a qualified healthcare professional for any health concerns.';
+  scr.appendChild(disc);
 
-  // Restart
-  var rb = document.createElement('button');
-  rb.className = 'restart-btn';
-  rb.textContent = '↺  Start a new assessment';
-  rb.onclick = resetAssessment;
-  chatScroll.appendChild(rb);
+  var rb=document.createElement('button'); rb.className='restart-btn';
+  rb.textContent='↺  Start a new assessment'; rb.onclick=resetAssess;
+  scr.appendChild(rb);
+  scrollTo('assessScroll');
 
-  scrollChat();
-  unlockChats(level, days);
+  unlockChats(lv,days);
 }
 
-function showFallback() {
-  var level = totalScore <= 4 ? 'low' : totalScore <= 10 ? 'medium' : 'high';
-  renderResult(level, totalScore <= 4 ? 18 : totalScore <= 10 ? 42 : 72,
-    'Your responses have been recorded. Please ensure python app.py is running for full model analysis.');
+function fallback(){
+  var lv=score<=4?'low':score<=10?'medium':'high';
+  renderResult(lv,score<=4?18:score<=10?42:72,'Your responses have been recorded. Make sure python app.py is running for full model analysis.');
 }
 
-/* ═══════════════════════════════════════════════════
-   UNLOCK FOLLOW-UP & REPORT CHATS
-═══════════════════════════════════════════════════ */
-function unlockChats(level, days) {
-  // Unlock follow-up
-  var fi = document.getElementById('followupItem');
-  fi.style.opacity = '1'; fi.style.pointerEvents = 'auto';
-  fi.querySelector('.chat-lock').style.display = 'none';
-  document.getElementById('followupPreview').textContent = 'Next check-in in ' + days + ' days · tap to view';
-  document.getElementById('followupTime').textContent = 'Today';
+/* ══════════════════════════════════════
+   UNLOCK CHATS
+══════════════════════════════════════ */
+function unlockChats(lv,days){
+  // sidebar
+  var cf=document.getElementById('crFollowup'); cf.classList.remove('locked');
+  cf.onclick=function(){openChat('followup');};
+  document.getElementById('crFollowupPreview').textContent='Check-in in '+days+' days · tap to view';
+  document.getElementById('crFollowupLock').style.display='none';
+  var cr2=document.getElementById('crReport'); cr2.classList.remove('locked');
+  cr2.onclick=function(){openChat('report');};
+  document.getElementById('crReportPreview').textContent=lv.charAt(0).toUpperCase()+lv.slice(1)+' risk · view your report';
+  document.getElementById('crReportLock').style.display='none';
+  document.getElementById('crAssessPreview').textContent='Assessment complete · '+lv+' risk';
+  var bd=document.getElementById('crAssessBadge'); if(bd) bd.style.display='none';
 
-  // Unlock report
-  var ri = document.getElementById('reportItem');
-  ri.style.opacity = '1'; ri.style.pointerEvents = 'auto';
-  ri.querySelector('.chat-lock').style.display = 'none';
-  document.getElementById('reportPreview').textContent = level.charAt(0).toUpperCase()+level.slice(1)+' risk · tap to view your report';
-  document.getElementById('reportTime').textContent = 'Today';
+  // home cards
+  var qf=document.getElementById('qcFollowup'); qf.classList.remove('locked-card');
+  qf.onclick=function(){openChat('followup');};
+  document.getElementById('qcFollowupBadge').className='qc-badge badge-done'; document.getElementById('qcFollowupBadge').textContent='Unlocked';
+  var qr=document.getElementById('qcReport'); qr.classList.remove('locked-card');
+  qr.onclick=function(){openChat('report');};
+  document.getElementById('qcReportBadge').className='qc-badge badge-done'; document.getElementById('qcReportBadge').textContent='Unlocked';
+  document.getElementById('qcAssessBadge').className='qc-badge badge-done'; document.getElementById('qcAssessBadge').textContent='Complete ✓';
 
-  // Smart chats
-  buildSmartChats(level);
+  // smart rows
+  buildSmartRows(lv);
 
-  // Update assessment preview
-  document.getElementById('assessPreview').textContent = 'Assessment complete · ' + level + ' risk';
-  document.getElementById('assessTime').textContent = 'Today';
-  var ad = document.getElementById('assessDot');
-  if(ad) ad.style.display = 'none';
-
-  // Build follow-up screen
-  buildFollowupScreen(level, days);
-
-  // Build report screen
-  buildReportScreen();
+  // build other screens
+  buildFollowup(lv,days);
+  buildReport();
 }
 
-function buildSmartChats(level) {
-  document.getElementById('smartLabel').style.display = 'block';
-  var container = document.getElementById('smartChats');
-  container.innerHTML = '';
-
-  var smarts = [];
-  if (level === 'high') {
-    smarts.push({ icon:'🏥', bg:'ci-pink', title:'Book a Clinic Visit', preview:"Let's help you find and contact a breast clinic near you", time:'Urgent', unread:true });
-  }
-  smarts.push({ icon:'📖', bg:'ci-teal', title:'Self-Exam Guide', preview:'Learn the 5-step monthly self-examination technique', time:'New', unread:true });
-  smarts.push({ icon:'💡', bg:'ci-amber', title:'Breast Health Tips', preview:'Diet, lifestyle & early detection habits that matter', time:'New', unread:false });
-
-  smarts.forEach(function(s) {
-    var item = document.createElement('div');
-    item.className = 'chat-item';
-    item.innerHTML =
-      '<div class="chat-icon '+s.bg+'">'+s.icon+'</div>'+
-      '<div class="chat-meta">'+
-      '<div class="chat-meta-title">'+s.title+'</div>'+
-      '<div class="chat-meta-preview">'+s.preview+'</div>'+
-      '</div>'+
-      '<div class="chat-meta-time">'+s.time+'</div>'+
-      (s.unread ? '<div class="chat-unread"></div>' : '');
-    item.onclick = function(){ showToast(s.title + ' — coming soon!'); };
-    container.appendChild(item);
+function buildSmartRows(lv){
+  var c=document.getElementById('smartRows'); c.innerHTML='';
+  var label=document.createElement('div'); label.className='sidebar-label'; label.textContent='Smart chats'; c.appendChild(label);
+  var items=[];
+  if(lv==='high') items.push({icon:'🏥',bg:'cr-pink',title:'Book a Clinic Visit',prev:'Find a breast clinic near you'});
+  items.push({icon:'📖',bg:'cr-teal',title:'Self-Exam Guide',prev:'5-step monthly technique'});
+  items.push({icon:'💡',bg:'cr-amber',title:'Breast Health Tips',prev:'Diet & lifestyle habits'});
+  items.forEach(function(it){
+    var row=document.createElement('div'); row.className='chat-row';
+    row.innerHTML='<div class="cr-icon '+it.bg+'">'+it.icon+'</div><div class="cr-info"><div class="cr-title">'+it.title+'</div><div class="cr-preview">'+it.prev+'</div></div><div class="cr-badge"></div>';
+    row.onclick=function(){toast(it.title+' — coming soon!');};
+    c.appendChild(row);
   });
 }
 
-function buildFollowupScreen(level, days) {
-  var scr = document.getElementById('followupScroll');
-  scr.innerHTML = '';
-  var msgs = [
-    { bot:"Hi! This is your Follow-up & Reminders space. 🕐" },
-    { bot:"Based on your "+level+" risk assessment, I've set a check-in reminder for <strong>"+days+" days</strong> from today." },
-    { bot: level === 'high'
-        ? "Given your results, I'd strongly encourage booking a clinical appointment this week. Would you like tips on what to say to your doctor?"
-        : level === 'medium'
-        ? "In the meantime, keep doing monthly self-exams. Tap the Self-Exam Guide in your inbox to learn the correct technique."
-        : "You're doing great by checking in proactively. I'll remind you again in 6 months. Keep doing self-exams monthly!" }
+function buildFollowup(lv,days){
+  var scr=document.getElementById('followupScroll'); scr.innerHTML='';
+  var msgs=[
+    "Hi 🌸 This is your Follow-up &amp; Reminders space.",
+    "Based on your <strong>"+lv+" risk</strong> result, I've scheduled a check-in reminder for <strong>"+days+" days</strong> from today.",
+    lv==='high'?"I strongly encourage you to book a clinical appointment this week. Early action is the most powerful thing you can do for yourself."
+      :lv==='medium'?"In the meantime, continue monthly self-exams and speak with your doctor within the next 4 weeks. You have taken a great first step."
+      :"You are doing great by checking in proactively. I will remind you again in 6 months. Keep doing self-exams monthly 🌸"
   ];
-  msgs.forEach(function(m, i){
+  msgs.forEach(function(m,i){
     setTimeout(function(){
-      var row = document.createElement('div');
-      row.className = 'msg-bot-row';
-      row.innerHTML = '<div class="msg-avatar">🌸</div><div class="bubble bot">'+m.bot+'</div>';
-      scr.appendChild(row);
-      scr.scrollTop = scr.scrollHeight;
-    }, i * 600);
+      var r=document.createElement('div'); r.className='msg-row';
+      r.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot">'+m+'</div>';
+      scr.appendChild(r); scr.scrollTop=scr.scrollHeight;
+    },i*650);
   });
 }
 
-function buildReportScreen() {
-  if (!savedResult) return;
-  var scr = document.getElementById('reportScroll');
-  scr.innerHTML = '';
-  var r = savedResult;
-
+function buildReport(){
+  if(!savedResult) return;
+  var scr=document.getElementById('reportScroll'); scr.innerHTML='';
+  var r=savedResult;
   setTimeout(function(){
-    var row = document.createElement('div');
-    row.className = 'msg-bot-row';
-    row.innerHTML = '<div class="msg-avatar">🌸</div><div class="bubble bot">Here is your complete health report from today\'s assessment.</div>';
+    var row=document.createElement('div'); row.className='msg-row';
+    row.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot">Here is your complete health report from <strong>'+r.date+'</strong>.</div>';
     scr.appendChild(row);
 
-    var card = document.createElement('div');
-    card.className = 'risk-card ' + r.level;
-    var content = getRiskContent(r.level);
-    card.innerHTML =
-      '<div class="risk-pill">'+r.level+' risk · '+r.date+'</div>'+
-      '<div class="risk-title">'+content.title+'</div>'+
+    var card=document.createElement('div'); card.className='risk-card '+r.lv;
+    var c=getRisk(r.lv);
+    card.innerHTML='<div class="risk-pill">'+r.lv+' risk · '+r.date+'</div>'+
+      '<div class="risk-title">'+c.title+'</div>'+
       '<div class="risk-body">Model malignant probability: <strong>'+r.prob+'%</strong></div>'+
-      '<div class="actions-list">'+
-      content.actions.map(function(a){ return '<div class="action-item"><div class="action-dot"></div><span>'+a+'</span></div>'; }).join('')+
-      '</div>';
+      '<div class="actions-list">'+c.actions.map(function(a){return '<div class="action-item"><div class="action-dot"></div><span>'+a+'</span></div>';}).join('')+'</div>';
     scr.appendChild(card);
 
-    var summRow = document.createElement('div');
-    summRow.className = 'msg-bot-row';
-    summRow.innerHTML = '<div class="msg-avatar">🌸</div><div class="bubble bot" style="font-size:13px;">Your answers: <br><br>' +
-      r.answers.map(function(a){ return '• <strong>'+a.q+'</strong>: '+a.a; }).join('<br>') + '</div>';
-    scr.appendChild(summRow);
+    var sumRow=document.createElement('div'); sumRow.className='msg-row';
+    sumRow.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot" style="font-size:13px;line-height:1.7;">Your answers:<br><br>'+
+      r.answers.map(function(a){return '· <strong>'+a.q+'</strong>: '+a.a;}).join('<br>')+'</div>';
+    scr.appendChild(sumRow);
 
-    var disc = document.createElement('p');
-    disc.className = 'disclaimer';
-    disc.textContent = 'This is not a medical diagnosis. Always consult a qualified healthcare professional.';
+    var disc=document.createElement('p'); disc.className='disclaimer';
+    disc.textContent='This is not a medical diagnosis. Always consult a qualified healthcare professional.';
     scr.appendChild(disc);
-    scr.scrollTop = scr.scrollHeight;
-  }, 300);
+    scr.scrollTop=scr.scrollHeight;
+  },300);
 }
 
-/* ═══════════════════════════════════════════════════
+/* ══════════════════════════════════════
    NAVIGATION
-═══════════════════════════════════════════════════ */
-var currentScreen = 'inbox';
+══════════════════════════════════════ */
+var panels={home:'panelHome',assess:'panelAssess',followup:'panelFollowup',report:'panelReport'};
+var topbarData={
+  home:{icon:'🌸',title:'FEAR — Find Early, Act Responsibly',sub:'Select a conversation to begin',prog:false},
+  assess:{icon:'🔍',title:'Breast Health Assessment',sub:'Private · guided · 10 questions',prog:true},
+  followup:{icon:'🕐',title:'Follow-up & Reminders',sub:'Your personalised check-in schedule',prog:false},
+  report:{icon:'📋',title:'My Health Report',sub:'Risk summary and model analysis',prog:false}
+};
 
-function openChat(type) {
-  showScreen('chat-' + type);
+function showHome(){
+  switchPanel('home');
+  setActive('navHome');
 }
 
-function showScreen(name) {
-  document.getElementById('screenInbox').classList.remove('active');
-  document.getElementById('screenChat').classList.remove('active');
-  document.getElementById('screenFollowup').classList.remove('active');
-  document.getElementById('screenReport').classList.remove('active');
-
-  document.getElementById('backBtn').style.display = 'flex';
-  document.getElementById('progWrap').style.display = 'none';
-
-  if (name === 'chat-assessment') {
-    document.getElementById('screenChat').classList.add('active');
-    document.getElementById('navName').textContent = 'Assessment';
-    document.getElementById('navSub').textContent = 'Breast Health Check-in';
-    document.getElementById('progWrap').style.display = 'block';
-    currentScreen = 'assessment';
-    if (curStep === 0) startAssessment();
-  } else if (name === 'chat-followup') {
-    document.getElementById('screenFollowup').classList.add('active');
-    document.getElementById('navName').textContent = 'Follow-up';
-    document.getElementById('navSub').textContent = 'Reminders & next steps';
-    currentScreen = 'followup';
-  } else if (name === 'chat-report') {
-    document.getElementById('screenReport').classList.add('active');
-    document.getElementById('navName').textContent = 'My Report';
-    document.getElementById('navSub').textContent = 'Health summary';
-    currentScreen = 'report';
-    if (savedResult) buildReportScreen();
-  }
-}
-
-function goInbox() {
-  document.getElementById('screenInbox').classList.add('active');
-  document.getElementById('screenChat').classList.remove('active');
-  document.getElementById('screenFollowup').classList.remove('active');
-  document.getElementById('screenReport').classList.remove('active');
-  document.getElementById('backBtn').style.display = 'none';
-  document.getElementById('progWrap').style.display = 'none';
-  document.getElementById('navName').textContent = 'FEAR';
-  document.getElementById('navSub').textContent = 'Find Early · Act Responsibly';
-  currentScreen = 'inbox';
-}
-
-function switchTab(tab) {
-  ['Messages','Insights','History','Settings'].forEach(function(t){
-    document.getElementById('tab'+t).classList.remove('active');
+function openChat(type){
+  if((type==='followup'||type==='report')&&!savedResult){lockedClick();return;}
+  switchPanel(type);
+  ['crAssess','crFollowup','crReport'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.classList.remove('active');
   });
-  document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
-  if (tab !== 'messages') showToast(tab.charAt(0).toUpperCase()+tab.slice(1)+' — coming soon!');
-  else goInbox();
+  var map={assess:'crAssess',followup:'crFollowup',report:'crReport'};
+  if(map[type]){var el=document.getElementById(map[type]); if(el) el.classList.add('active');}
+  setActive(null);
+  if(type==='assess'&&!assessStarted){assessStarted=true;startAssess();}
+  if(type==='report'&&savedResult) buildReport();
 }
 
-/* ═══════════════════════════════════════════════════
+function switchPanel(name){
+  Object.keys(panels).forEach(function(k){
+    var el=document.getElementById(panels[k]);
+    if(el) el.style.display=(k===name)?'flex':'none';
+  });
+  var tb=topbarData[name]||topbarData.home;
+  document.getElementById('tbIcon').textContent=tb.icon;
+  document.getElementById('tbTitle').textContent=tb.title;
+  document.getElementById('tbSub').textContent=tb.sub;
+  document.getElementById('progWrap').style.display=tb.prog?'flex':'none';
+}
+
+function setActive(id){
+  ['navHome','navInsights','navHistory','navSettings'].forEach(function(n){
+    var el=document.getElementById(n); if(el) el.classList.remove('active');
+  });
+  if(id){var el=document.getElementById(id); if(el) el.classList.add('active');}
+}
+
+function lockedClick(){ toast('Complete your assessment first to unlock this chat.'); }
+
+/* ══════════════════════════════════════
    CHAT HELPERS
-═══════════════════════════════════════════════════ */
-function appendBot(html) {
-  var scr = document.getElementById('chatScroll');
-  var row = document.createElement('div');
-  row.className = 'msg-bot-row';
-  row.innerHTML = '<div class="msg-avatar">🌸</div><div class="bubble bot">'+html+'</div>';
-  scr.appendChild(row);
-  scrollChat();
+══════════════════════════════════════ */
+function appendBot(html,panel){
+  panel=panel||'assess';
+  var scr=document.getElementById(panel+'Scroll');
+  var r=document.createElement('div'); r.className='msg-row';
+  r.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot">'+html+'</div>';
+  scr.appendChild(r); scrollTo(panel+'Scroll');
 }
 
-function appendUser(text) {
-  var scr = document.getElementById('chatScroll');
-  var b = document.createElement('div');
-  b.className = 'bubble user';
-  b.textContent = text;
-  scr.appendChild(b);
-  scrollChat();
+function appendUser(text){
+  var scr=document.getElementById('assessScroll');
+  var b=document.createElement('div'); b.className='bubble user'; b.textContent=text;
+  scr.appendChild(b); scrollTo('assessScroll');
 }
 
-function showTyping(cb, delay) {
-  delay = delay || 700;
-  var scr = document.getElementById('chatScroll');
-  var row = document.createElement('div');
-  row.className = 'msg-bot-row'; row.id = 'typingRow';
-  row.innerHTML = '<div class="msg-avatar">🌸</div><div class="bubble bot"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
-  scr.appendChild(row);
-  scrollChat();
-  setTimeout(function(){ var el=document.getElementById('typingRow'); if(el) el.remove(); cb(); }, delay);
+function typing(panel,cb,delay){
+  delay=delay||700;
+  var scr=document.getElementById((panel||'assess')+'Scroll');
+  var r=document.createElement('div'); r.className='msg-row'; r.id='typRow';
+  r.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+  scr.appendChild(r); scrollTo((panel||'assess')+'Scroll');
+  setTimeout(function(){var el=document.getElementById('typRow');if(el)el.remove();cb();},delay);
 }
 
-function scrollChat() {
-  var s = document.getElementById('chatScroll');
-  if(s) s.scrollTop = s.scrollHeight;
-}
+function scrollTo(id){var el=document.getElementById(id);if(el)el.scrollTop=el.scrollHeight;}
 
-/* ═══════════════════════════════════════════════════
-   ASSESSMENT START / RESET
-═══════════════════════════════════════════════════ */
-function startAssessment() {
-  curStep = 0; totalScore = 0; answers = [];
-  var scr = document.getElementById('chatScroll');
-  scr.innerHTML = '';
+/* ══════════════════════════════════════
+   ASSESS START / RESET
+══════════════════════════════════════ */
+function startAssess(){
+  cur=0;score=0;answers=[];
+  document.getElementById('assessScroll').innerHTML='';
   updateProg();
-  var s = steps[0];
-  appendBot(s.bot);
+  var s=steps[0];
+  appendBot(s.bot,'assess');
   renderOptions(s);
 }
 
-function resetAssessment() {
-  curStep = 0; totalScore = 0; answers = [];
-  savedResult = null;
-  var scr = document.getElementById('chatScroll');
-  scr.innerHTML = '';
-  document.getElementById('progFill').style.width = '0%';
-  document.getElementById('progLabel').textContent = 'Step 1 of '+STEPS;
-  updateProg();
-  var s = steps[0];
-  appendBot(s.bot);
-  renderOptions(s);
+function resetAssess(){
+  cur=0;score=0;answers=[];savedResult=null;assessStarted=false;
+  document.getElementById('assessScroll').innerHTML='';
+  document.getElementById('progFill').style.width='0%';
+  document.getElementById('progTxt').textContent='Step 1 of '+TOTAL;
+  appendBot(steps[0].bot,'assess');
+  renderOptions(steps[0]);
 }
 
-/* ═══════════════════════════════════════════════════
+/* ══════════════════════════════════════
    TOAST
-═══════════════════════════════════════════════════ */
-function showToast(msg) {
-  var t = document.createElement('div');
-  t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1A0A12;color:#fff;font-size:13px;padding:10px 18px;border-radius:20px;z-index:999;font-family:var(--font-body);white-space:nowrap;opacity:0;transition:opacity 0.3s;max-width:90%;text-align:center;';
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(function(){ t.style.opacity='1'; },10);
-  setTimeout(function(){ t.style.opacity='0'; setTimeout(function(){ t.remove(); },300); },2200);
+══════════════════════════════════════ */
+function toast(msg){
+  var t=document.getElementById('toastEl');
+  t.textContent=msg; t.style.opacity='1';
+  setTimeout(function(){t.style.opacity='0';},2200);
 }
 
-/* ═══════════════════════════════════════════════════
+/* ══════════════════════════════════════
    API STATUS
-═══════════════════════════════════════════════════ */
-function checkAPI() {
-  var dot = document.getElementById('statusDot');
-  fetch(API+'/health').then(function(r){ return r.json(); })
-    .then(function(d){ dot.className = d.status==='ok' ? 'nav-dot on' : 'nav-dot off'; })
-    .catch(function(){ dot.className = 'nav-dot off'; });
+══════════════════════════════════════ */
+function checkAPI(){
+  fetch(API+'/health').then(function(r){return r.json();})
+  .then(function(d){
+    document.getElementById('apiDot').className='api-dot '+(d.status==='ok'?'on':'off');
+    document.getElementById('apiLabel').textContent=d.status==='ok'?'Model connected':'Model error';
+  }).catch(function(){
+    document.getElementById('apiDot').className='api-dot off';
+    document.getElementById('apiLabel').textContent='Run: python app.py';
+  });
 }
-
 checkAPI();
-setInterval(checkAPI, 30000);
+setInterval(checkAPI,30000);
 </script>
 </body>
 </html>
