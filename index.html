@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>FEAR — Find Early, Act Responsibly</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -17,14 +17,16 @@
   --sidebar:260px;
   --font-h:'Fraunces',serif;--font:'DM Sans',sans-serif;
   --r:16px;--r-sm:10px;
+  --topbar-h:58px;--tabbar-h:64px;
 }
+
 html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);overflow:hidden;}
 
-/* ═══════════ LAYOUT ═══════════ */
+/* ══════════ LAYOUT ══════════ */
 .layout{display:grid;grid-template-columns:var(--sidebar) 1fr;grid-template-rows:100vh;height:100vh;}
 
-/* ═══════════ SIDEBAR ═══════════ */
-.sidebar{background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+/* ══════════ SIDEBAR ══════════ */
+.sidebar{background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:transform 0.3s ease;}
 
 .brand{padding:22px 20px 16px;border-bottom:1px solid var(--border2);flex-shrink:0;}
 .brand-logo{display:flex;align-items:center;gap:10px;margin-bottom:2px;}
@@ -38,7 +40,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .nav-item.active{background:var(--pink-light);color:var(--pink);font-weight:500;}
 .nav-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
 
-.sidebar-section{padding:6px 10px 0;}
+.sidebar-section{padding:6px 10px 0;overflow-y:auto;flex:1;}
 .sidebar-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.7px;color:var(--text3);padding:8px 12px 4px;}
 
 .chat-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r-sm);cursor:pointer;transition:all 0.15s;position:relative;}
@@ -57,46 +59,52 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .chat-row.locked{opacity:0.5;cursor:default;}
 .chat-row.locked:hover{background:transparent;}
 
-.sidebar-footer{margin-top:auto;padding:14px 16px;border-top:1px solid var(--border2);display:flex;align-items:center;gap:10px;}
+.sidebar-footer{padding:14px 16px;border-top:1px solid var(--border2);display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .api-dot{width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0;transition:background 0.3s;}
 .api-dot.on{background:var(--green);}
 .api-dot.off{background:#EF5350;}
 .api-label{font-size:11px;color:var(--text3);}
 
-/* ═══════════ MAIN PANEL ═══════════ */
-.main{display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
+/* ══════════ SIDEBAR OVERLAY (mobile) ══════════ */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(26,10,18,0.4);z-index:99;backdrop-filter:blur(2px);}
+
+/* ══════════ MAIN PANEL ══════════ */
+.main{display:flex;flex-direction:column;overflow:hidden;background:var(--bg);min-width:0;}
 
 /* top bar */
-.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 28px;height:58px;display:flex;align-items:center;gap:14px;flex-shrink:0;}
-.topbar-icon{width:36px;height:36px;border-radius:50%;background:var(--pink-light);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-.topbar-info{flex:1;}
-.topbar-title{font-size:15px;font-weight:500;color:var(--text);font-family:var(--font-h);}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 20px;height:var(--topbar-h);display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.menu-btn{width:36px;height:36px;border-radius:var(--r-sm);background:none;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.15s;}
+.menu-btn:hover{background:var(--pink-light);}
+.topbar-icon{width:34px;height:34px;border-radius:50%;background:var(--pink-light);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.topbar-info{flex:1;min-width:0;}
+.topbar-title{font-size:15px;font-weight:500;color:var(--text);font-family:var(--font-h);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .topbar-sub{font-size:11px;color:var(--text3);margin-top:1px;}
-.prog-wrap{display:flex;align-items:center;gap:10px;}
-.prog-track{width:140px;height:4px;background:var(--border);border-radius:4px;overflow:hidden;}
+.prog-wrap{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.prog-track{width:120px;height:4px;background:var(--border);border-radius:4px;overflow:hidden;}
 .prog-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--pink2));border-radius:4px;transition:width 0.5s cubic-bezier(.4,0,.2,1);}
 .prog-txt{font-size:11px;color:var(--text3);white-space:nowrap;}
 
-/* ═══════════ CONTENT AREA ═══════════ */
+/* ══════════ CONTENT AREA ══════════ */
 .content{flex:1;overflow:hidden;display:flex;flex-direction:column;}
 
-/* ── Inbox / Home ── */
-.home-panel{flex:1;overflow-y:auto;padding:28px 32px;}
-.home-hero{background:linear-gradient(135deg,#FFF0F5,#FDEEF3);border:1px solid var(--pink-mid);border-radius:20px;padding:28px 32px;display:flex;align-items:center;gap:24px;margin-bottom:24px;}
+/* ── Home ── */
+.home-panel{flex:1;overflow-y:auto;padding:24px 28px;}
+.home-hero{background:linear-gradient(135deg,#FFF0F5,#FDEEF3);border:1px solid var(--pink-mid);border-radius:20px;padding:28px 32px;display:flex;align-items:center;gap:24px;margin-bottom:20px;}
 .hero-text h1{font-family:var(--font-h);font-size:28px;font-weight:600;color:var(--text);line-height:1.2;margin-bottom:6px;}
 .hero-text h1 em{color:var(--pink);font-style:italic;}
-.hero-text p{font-size:14px;color:var(--text2);line-height:1.6;max-width:480px;}
+.hero-text p{font-size:14px;color:var(--text2);line-height:1.6;max-width:460px;}
 .hero-cta{margin-top:16px;background:var(--pink);border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:500;font-family:var(--font);color:#fff;cursor:pointer;transition:background 0.15s,transform 0.1s;}
 .hero-cta:hover{background:var(--pink2);}
 .hero-cta:active{transform:scale(0.98);}
 .hero-illust{flex-shrink:0;opacity:0.85;}
 
-.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
-.stat-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;}
-.stat-card .sc-icon{font-size:22px;margin-bottom:8px;}
-.stat-card .sc-val{font-family:var(--font-h);font-size:22px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;}
+.stat-card .sc-icon{font-size:20px;margin-bottom:6px;}
+.stat-card .sc-val{font-family:var(--font-h);font-size:20px;font-weight:500;color:var(--text);margin-bottom:2px;}
 .stat-card .sc-label{font-size:12px;color:var(--text3);}
 
+.section-label{font-size:12px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;}
 .quick-chats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
 .qc-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;gap:10px;}
 .qc-card:hover{border-color:var(--pink-mid);box-shadow:0 4px 16px rgba(232,84,122,0.08);transform:translateY(-2px);}
@@ -111,39 +119,35 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .badge-done{background:var(--green-light);color:#2E7D32;}
 
 /* ── Chat panel ── */
-.chat-panel{flex:1;overflow:hidden;display:flex;flex-direction:column;}
-.chat-messages{flex:1;overflow-y:auto;padding:24px 28px;display:flex;flex-direction:column;gap:12px;}
+.chat-messages{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:12px;}
 .msg-row{display:flex;align-items:flex-end;gap:10px;animation:fadeUp 0.3s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.msg-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--pink2));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
-.bubble{padding:12px 16px;border-radius:18px;font-size:14px;line-height:1.6;max-width:600px;}
+.msg-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--pink2));display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.bubble{padding:11px 15px;border-radius:18px;font-size:14px;line-height:1.6;max-width:580px;}
 .bubble.bot{background:#fff;border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--text);}
 .bubble.user{background:var(--pink);color:#fff;border-bottom-right-radius:4px;align-self:flex-end;margin-left:auto;}
 .bubble.note{background:#FBF4F7;border:1px solid var(--border2);font-size:13px;color:var(--text2);}
 
-/* typing */
 .typing-dots{display:flex;gap:4px;align-items:center;padding:2px;}
 .typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--pink-mid);animation:blink 1.3s infinite;}
 .typing-dots span:nth-child(2){animation-delay:.18s;}
 .typing-dots span:nth-child(3){animation-delay:.36s;}
 @keyframes blink{0%,80%,100%{opacity:.3;transform:scale(.75);}40%{opacity:1;transform:scale(1);}}
 
-/* ── OPTIONS AREA ── */
-.options-panel{background:#fff;border-top:1px solid var(--border);padding:16px 28px 20px;flex-shrink:0;}
+/* ── Options area ── */
+.options-panel{background:#fff;border-top:1px solid var(--border);padding:14px 24px 18px;flex-shrink:0;}
 .opt-hint{font-size:12px;color:var(--text3);margin-bottom:10px;}
 
-/* illustrated grid */
 .illust-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;}
-.illust-card{background:var(--bg);border:2px solid var(--border);border-radius:14px;padding:14px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:all 0.15s;text-align:center;min-width:110px;flex:1;max-width:160px;}
+.illust-card{background:var(--bg);border:2px solid var(--border);border-radius:14px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:all 0.15s;text-align:center;min-width:100px;flex:1;max-width:155px;}
 .illust-card:hover{border-color:var(--pink-mid);background:var(--pink-light);}
 .illust-card.selected{border-color:var(--pink);background:var(--pink-light);}
-.ic-emoji{font-size:30px;line-height:1;}
+.ic-emoji{font-size:28px;line-height:1;}
 .ic-label{font-size:12px;font-weight:500;color:var(--text2);line-height:1.3;}
 .illust-card.selected .ic-label{color:var(--pink);}
 
-/* body location grid — tighter */
 .body-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
-.body-card{background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all 0.15s;text-align:center;min-width:90px;flex:1;max-width:130px;}
+.body-card{background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all 0.15s;text-align:center;min-width:85px;flex:1;max-width:125px;}
 .body-card:hover{border-color:var(--pink-mid);background:var(--pink-light);}
 .body-card.selected{border-color:var(--pink);background:var(--pink-light);}
 .body-card .ic-label{font-size:11px;font-weight:500;color:var(--text2);}
@@ -154,11 +158,11 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .send-btn:hover{background:var(--pink2);}
 .send-btn:active{transform:scale(0.98);}
 .send-btn:disabled{background:var(--pink-mid);cursor:not-allowed;}
-.single-btn{background:var(--pink-light);border:1.5px solid var(--pink-mid);border-radius:12px;padding:12px 28px;font-size:14px;font-weight:500;font-family:var(--font);color:var(--pink);cursor:pointer;transition:all 0.15s;}
+.single-btn{width:100%;background:var(--pink-light);border:1.5px solid var(--pink-mid);border-radius:12px;padding:13px 28px;font-size:14px;font-weight:500;font-family:var(--font);color:var(--pink);cursor:pointer;transition:all 0.15s;}
 .single-btn:hover{background:var(--pink);color:#fff;}
 
 /* ── Risk card ── */
-.risk-card{border-radius:var(--r);padding:20px;animation:fadeUp 0.4s ease;max-width:560px;}
+.risk-card{border-radius:var(--r);padding:18px;animation:fadeUp 0.4s ease;max-width:560px;}
 .risk-card.low{background:#E8F5E9;border:1px solid #A5D6A7;}
 .risk-card.medium{background:#FFF8E1;border:1px solid #FFD54F;}
 .risk-card.high{background:#FFEBEE;border:1px solid #EF9A9A;}
@@ -166,7 +170,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .risk-card.low .risk-pill{background:#C8E6C9;color:#1B5E20;}
 .risk-card.medium .risk-pill{background:#FFE082;color:#E65100;}
 .risk-card.high .risk-pill{background:#FFCDD2;color:#B71C1C;}
-.risk-title{font-family:var(--font-h);font-size:18px;font-weight:500;margin-bottom:8px;}
+.risk-title{font-family:var(--font-h);font-size:17px;font-weight:500;margin-bottom:8px;}
 .risk-card.low .risk-title{color:#1B5E20;}
 .risk-card.medium .risk-title{color:#E65100;}
 .risk-card.high .risk-title{color:#B71C1C;}
@@ -177,36 +181,195 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .actions-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
 .action-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;}
 .action-dot{width:6px;height:6px;border-radius:50%;margin-top:5px;flex-shrink:0;}
-.risk-card.low .action-dot{background:#4CAF50;} .risk-card.low .action-item{color:#2E7D32;}
-.risk-card.medium .action-dot{background:#FFA000;} .risk-card.medium .action-item{color:#E65100;}
-.risk-card.high .action-dot{background:#E53935;} .risk-card.high .action-item{color:#C62828;}
+.risk-card.low .action-dot{background:#4CAF50;}.risk-card.low .action-item{color:#2E7D32;}
+.risk-card.medium .action-dot{background:#FFA000;}.risk-card.medium .action-item{color:#E65100;}
+.risk-card.high .action-dot{background:#E53935;}.risk-card.high .action-item{color:#C62828;}
 .conf-track{height:5px;background:rgba(0,0,0,.07);border-radius:5px;overflow:hidden;}
 .conf-bar{height:100%;border-radius:5px;transition:width 1.2s ease;}
 .risk-card.low .conf-bar{background:#66BB6A;}
 .risk-card.medium .conf-bar{background:#FFA726;}
 .risk-card.high .conf-bar{background:#EF5350;}
 .conf-txt{font-size:11px;margin-top:4px;opacity:.7;}
-.risk-card.low .conf-txt{color:#2E7D32;} .risk-card.medium .conf-txt{color:#E65100;} .risk-card.high .conf-txt{color:#C62828;}
+.risk-card.low .conf-txt{color:#2E7D32;}.risk-card.medium .conf-txt{color:#E65100;}.risk-card.high .conf-txt{color:#C62828;}
 
 .followup-badge{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:9px 14px;font-size:12px;color:var(--text2);margin-top:8px;}
 .disclaimer{font-size:11px;color:var(--text3);line-height:1.5;margin-top:8px;max-width:500px;}
 .restart-btn{background:transparent;border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-size:13px;font-family:var(--font);color:var(--text3);cursor:pointer;margin-top:10px;transition:all 0.15s;}
 .restart-btn:hover{background:var(--pink-light);color:var(--pink);border-color:var(--pink-mid);}
 
+/* ══════════ BOTTOM TAB BAR (mobile only) ══════════ */
+.tabbar{display:none;background:#fff;border-top:1px solid var(--border);flex-shrink:0;height:var(--tabbar-h);padding:6px 0 8px;}
+.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px;transition:all 0.15s;}
+.tab-icon{font-size:20px;line-height:1;}
+.tab-label{font-size:10px;color:var(--text3);font-family:var(--font);}
+.tab-btn.tab-active .tab-label{color:var(--pink);font-weight:500;}
+.tab-btn.tab-active .tab-icon{transform:scale(1.1);}
+
 /* scrollbar */
-::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
 
 /* toast */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1A0A12;color:#fff;font-size:13px;padding:10px 20px;border-radius:20px;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none;}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1A0A12;color:#fff;font-size:13px;padding:10px 20px;border-radius:20px;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none;}
+
+/* ══════════════════════════════════════════
+   TABLET  600px – 900px
+══════════════════════════════════════════ */
+@media (max-width:900px) {
+  :root{ --sidebar:220px; }
+  .home-panel{ padding:20px; }
+  .home-hero{ padding:22px 24px; }
+  .hero-text h1{ font-size:24px; }
+  .hero-text p{ font-size:13px; }
+  .hero-illust svg{ width:120px;height:120px; }
+  .cards-grid{ grid-template-columns:repeat(3,1fr);gap:10px; }
+  .quick-chats{ grid-template-columns:repeat(3,1fr);gap:10px; }
+  .chat-messages{ padding:16px 18px; }
+  .options-panel{ padding:12px 18px 16px; }
+  .bubble{ font-size:13px; }
+}
+
+/* ══════════════════════════════════════════
+   MOBILE  ≤ 600px  — full single-column
+══════════════════════════════════════════ */
+@media (max-width:600px) {
+  :root{ --topbar-h:54px; }
+
+  /* Switch to single column — sidebar slides in as overlay */
+  .layout{
+    grid-template-columns:1fr;
+    grid-template-rows:var(--topbar-h) 1fr var(--tabbar-h);
+    height:100vh;
+  }
+
+  /* Sidebar becomes a fixed drawer */
+  .sidebar{
+    position:fixed;
+    top:0; left:0;
+    width:280px;
+    height:100vh;
+    z-index:100;
+    transform:translateX(-100%);
+    box-shadow:4px 0 24px rgba(26,10,18,0.15);
+  }
+  .sidebar.open{ transform:translateX(0); }
+  .sidebar-overlay.visible{ display:block; }
+
+  /* Main fills the grid */
+  .main{
+    grid-row:1/4;
+    grid-column:1;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    overflow:hidden;
+  }
+
+  /* Topbar — show hamburger, shrink padding */
+  .topbar{ padding:0 14px; gap:10px; }
+  .menu-btn{ display:flex; }
+  .topbar-icon{ width:30px;height:30px;font-size:14px; }
+  .topbar-title{ font-size:14px; }
+  .topbar-sub{ display:none; }
+  .prog-track{ width:80px; }
+  .prog-txt{ display:none; }
+
+  /* Show bottom tab bar */
+  .tabbar{ display:flex; }
+
+  /* Toast above tabbar */
+  .toast{ bottom:calc(var(--tabbar-h) + 12px); }
+
+  /* Home panel */
+  .home-panel{ padding:14px 14px 20px; }
+
+  /* Hero — stack vertically */
+  .home-hero{
+    flex-direction:column;
+    padding:20px 18px;
+    gap:16px;
+    text-align:center;
+  }
+  .hero-illust{ order:-1; }
+  .hero-illust svg{ width:100px;height:100px; }
+  .hero-text h1{ font-size:22px; }
+  .hero-text p{ font-size:13px;max-width:100%; }
+  .hero-cta{ width:100%;padding:13px; }
+
+  /* Stat cards — 3 in a row still ok at small sizes */
+  .cards-grid{ grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px; }
+  .stat-card{ padding:12px 10px; }
+  .stat-card .sc-val{ font-size:16px; }
+  .stat-card .sc-label{ font-size:10px; }
+  .stat-card .sc-icon{ font-size:16px; }
+
+  /* Quick chats — 1 column on mobile */
+  .quick-chats{ grid-template-columns:1fr;gap:10px; }
+  .qc-card{ flex-direction:row;align-items:center;gap:12px;padding:13px; }
+  .qc-card .qc-desc{ display:none; }
+  .qc-icon{ flex-shrink:0; }
+
+  /* Chat messages */
+  .chat-messages{ padding:14px 14px; }
+  .bubble{ font-size:13px;max-width:92%; }
+  .msg-av{ width:26px;height:26px;font-size:12px; }
+
+  /* Options panel */
+  .options-panel{ padding:10px 14px 14px; }
+  .illust-card{ min-width:80px;max-width:none;flex:1;padding:10px 6px; }
+  .ic-emoji{ font-size:24px; }
+  .ic-label{ font-size:11px; }
+  .body-card{ min-width:72px;max-width:none;flex:1;padding:8px 5px; }
+  .send-btn{ padding:12px 20px;font-size:13px; }
+  .single-btn{ padding:13px;font-size:13px; }
+
+  /* Risk card */
+  .risk-card{ max-width:100%;padding:15px; }
+  .risk-title{ font-size:15px; }
+  .followup-badge{ display:flex;width:100%; }
+  .disclaimer{ max-width:100%; }
+  .restart-btn{ width:100%; }
+}
+
+/* ══════════════════════════════════════════
+   VERY SMALL  ≤ 380px  (small Android/iPhone SE)
+══════════════════════════════════════════ */
+@media (max-width:380px) {
+  .cards-grid{ grid-template-columns:1fr 1fr;gap:8px; }
+  .cards-grid .stat-card:last-child{ grid-column:1/-1; }
+  .hero-text h1{ font-size:20px; }
+  .illust-grid{ gap:6px; }
+  .illust-card{ min-width:70px;padding:8px 4px; }
+  .ic-emoji{ font-size:22px; }
+  .ic-label{ font-size:10px; }
+  .body-card{ min-width:60px;padding:7px 4px; }
+}
+
+/* ══════════════════════════════════════════
+   LARGE DESKTOP  ≥ 1200px
+══════════════════════════════════════════ */
+@media (min-width:1200px) {
+  :root{ --sidebar:280px; }
+  .home-panel{ padding:32px 36px; }
+  .home-hero{ padding:32px 36px; }
+  .hero-text h1{ font-size:32px; }
+  .hero-illust svg{ width:180px;height:180px; }
+  .chat-messages{ padding:28px 32px; }
+  .options-panel{ padding:18px 32px 22px; }
+  .bubble{ font-size:15px; }
+}
 </style>
 </head>
 <body>
+
+<!-- SIDEBAR OVERLAY (mobile tap-to-close) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
 <div class="layout">
 
 <!-- ══════════════ SIDEBAR ══════════════ -->
-<div class="sidebar">
+<div class="sidebar" id="sidebar">
   <div class="brand">
     <div class="brand-logo">
       <div class="brand-heart">
@@ -220,16 +383,16 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
   </div>
 
   <div class="sidebar-nav">
-    <div class="nav-item active" id="navHome" onclick="showHome()">
+    <div class="nav-item active" id="navHome" onclick="showHome();closeSidebar()">
       <div class="nav-icon">🏠</div> Home
     </div>
-    <div class="nav-item" id="navInsights" onclick="toast('Insights — coming soon')">
+    <div class="nav-item" id="navInsights" onclick="toast('Insights — coming soon');closeSidebar()">
       <div class="nav-icon">📊</div> Insights
     </div>
-    <div class="nav-item" id="navHistory" onclick="toast('History — coming soon')">
+    <div class="nav-item" id="navHistory" onclick="toast('History — coming soon');closeSidebar()">
       <div class="nav-icon">📁</div> History
     </div>
-    <div class="nav-item" id="navSettings" onclick="toast('Settings — coming soon')">
+    <div class="nav-item" id="navSettings" onclick="toast('Settings — coming soon');closeSidebar()">
       <div class="nav-icon">⚙️</div> Settings
     </div>
   </div>
@@ -237,7 +400,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
   <div class="sidebar-section">
     <div class="sidebar-label">Conversations</div>
 
-    <div class="chat-row" id="crAssess" onclick="openChat('assess')">
+    <div class="chat-row" id="crAssess" onclick="openChat('assess');closeSidebar()">
       <div class="cr-icon cr-pink">🔍</div>
       <div class="cr-info">
         <div class="cr-title">Breast Health Assessment</div>
@@ -246,7 +409,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
       <div class="cr-badge" id="crAssessBadge"></div>
     </div>
 
-    <div class="chat-row locked" id="crFollowup" onclick="openChat('followup')">
+    <div class="chat-row locked" id="crFollowup" onclick="openChat('followup');closeSidebar()">
       <div class="cr-icon cr-teal">🕐</div>
       <div class="cr-info">
         <div class="cr-title">Follow-up & Reminders</div>
@@ -255,7 +418,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
       <div class="cr-lock" id="crFollowupLock">🔒</div>
     </div>
 
-    <div class="chat-row locked" id="crReport" onclick="openChat('report')">
+    <div class="chat-row locked" id="crReport" onclick="openChat('report');closeSidebar()">
       <div class="cr-icon cr-amber">📋</div>
       <div class="cr-info">
         <div class="cr-title">My Health Report</div>
@@ -278,6 +441,11 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
   <!-- TOP BAR -->
   <div class="topbar">
+    <button class="menu-btn" id="menuBtn" onclick="toggleSidebar()" aria-label="Menu">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M3 5h14M3 10h14M3 15h14" stroke="#E8547A" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
     <div class="topbar-icon" id="tbIcon">🌸</div>
     <div class="topbar-info">
       <div class="topbar-title" id="tbTitle">FEAR — Find Early, Act Responsibly</div>
@@ -292,7 +460,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
   <!-- CONTENT -->
   <div class="content" id="content">
 
-    <!-- HOME PANEL -->
+    <!-- HOME -->
     <div id="panelHome" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
       <div class="home-panel">
         <div class="home-hero">
@@ -320,33 +488,33 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
         <div class="cards-grid">
           <div class="stat-card">
             <div class="sc-icon">🎯</div>
-            <div class="sc-val" id="scAccuracy">~97%</div>
-            <div class="sc-label">Model accuracy on test data</div>
+            <div class="sc-val">~97%</div>
+            <div class="sc-label">Model accuracy</div>
           </div>
           <div class="stat-card">
             <div class="sc-icon">🔒</div>
             <div class="sc-val">Private</div>
-            <div class="sc-label">Nothing is stored or shared</div>
+            <div class="sc-label">Nothing stored</div>
           </div>
           <div class="stat-card">
             <div class="sc-icon">⏱️</div>
             <div class="sc-val">3 min</div>
-            <div class="sc-label">Average assessment time</div>
+            <div class="sc-label">Assessment time</div>
           </div>
         </div>
 
-        <div style="font-size:12px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">Your conversations</div>
+        <div class="section-label">Your conversations</div>
         <div class="quick-chats">
           <div class="qc-card" onclick="openChat('assess')">
             <div class="qc-icon" style="background:var(--pink-light)">🔍</div>
             <div class="qc-title">Breast Health Assessment</div>
-            <div class="qc-desc">10 guided questions with illustrated options. Your answers go directly into your trained ML model.</div>
+            <div class="qc-desc">10 guided questions with illustrated options. Goes directly into your trained ML model.</div>
             <span class="qc-badge badge-new" id="qcAssessBadge">Start now</span>
           </div>
           <div class="qc-card locked-card" id="qcFollowup" onclick="lockedClick()">
             <div class="qc-icon" style="background:var(--teal-light)">🕐</div>
             <div class="qc-title">Follow-up & Reminders</div>
-            <div class="qc-desc">Smart reminders based on your risk level. Personalised check-in schedule set after your first assessment.</div>
+            <div class="qc-desc">Smart reminders based on your risk level. Set automatically after your assessment.</div>
             <span class="qc-badge badge-lock" id="qcFollowupBadge">🔒 Locked</span>
           </div>
           <div class="qc-card locked-card" id="qcReport" onclick="lockedClick()">
@@ -376,86 +544,52 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
     </div>
 
   </div>
-</div>
-</div>
+
+  <!-- BOTTOM TAB BAR (mobile only) -->
+  <div class="tabbar">
+    <button class="tab-btn tab-active" id="tabHome" onclick="tabSwitch('home')">
+      <div class="tab-icon">🏠</div>
+      <div class="tab-label">Home</div>
+    </button>
+    <button class="tab-btn" id="tabAssess" onclick="tabSwitch('assess')">
+      <div class="tab-icon">🔍</div>
+      <div class="tab-label">Assessment</div>
+    </button>
+    <button class="tab-btn" id="tabFollowup" onclick="tabSwitch('followup')">
+      <div class="tab-icon">🕐</div>
+      <div class="tab-label">Follow-up</div>
+    </button>
+    <button class="tab-btn" id="tabReport" onclick="tabSwitch('report')">
+      <div class="tab-icon">📋</div>
+      <div class="tab-label">Report</div>
+    </button>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /layout -->
 
 <div class="toast" id="toastEl"></div>
 
 <script>
-/* ══════════════════════════════════════
-   CONFIG
-══════════════════════════════════════ */
-var API = 'https://earlycheck-app.onrender.com';
-var TOTAL = 10;
+var API='https://earlycheck-app.onrender.com';
+var TOTAL=10;
 
-/* ══════════════════════════════════════
-   STEPS
-══════════════════════════════════════ */
-var steps = [
-  { id:'welcome', sn:1,
-    bot:"Hi there 🌸 I'm FEAR — Find Early, Act Responsibly. I'll guide you through a private breast health check-in. Everything you share stays completely between us.",
-    type:'single', single:"I understand and accept" },
-
-  { id:'age', sn:2, bot:"How old are you? Age is one of the most important risk factors for breast health.",
-    type:'illust', multi:false,
-    opts:[{e:'🌱',l:'Under 30',v:0},{e:'🌸',l:'30 – 39',v:1},{e:'🌺',l:'40 – 49',v:2},{e:'🌻',l:'50 or older',v:3}]},
-
-  { id:'symptoms', sn:3,
-    bot:"Have you noticed anything unusual recently? Select all that apply.",
-    note:"Early signs can include lumps, skin changes, or nipple changes. It is okay if you have not noticed anything.",
-    type:'illust', multi:true,
-    opts:[
-      {s:'lump',l:'Lump or thickening',v:4},{s:'skin',l:'Skin dimpling',v:3},
-      {s:'nipple',l:'Nipple change',v:3},{s:'pain',l:'Breast pain',v:2},
-      {s:'swelling',l:'Swelling or warmth',v:2},{s:'none',l:'No changes noticed',v:0}
-    ]},
-
-  { id:'location', sn:4, bot:"If you noticed any changes, where are they located?",
-    type:'body', multi:false,
-    opts:[
-      {s:'upperOuter',l:'Upper outer',v:1},{s:'upperInner',l:'Upper inner',v:1},
-      {s:'lowerOuter',l:'Lower outer',v:1},{s:'lowerInner',l:'Lower inner',v:1},
-      {s:'nippleArea',l:'Nipple area',v:2},{s:'underArm',l:'Under arm',v:2},
-      {s:'both',l:'Both sides',v:2},{s:'noLoc',l:'Not sure',v:0}
-    ]},
-
-  { id:'duration', sn:5, bot:"How long have you been aware of any changes?",
-    type:'illust', multi:false,
-    opts:[{e:'⚡',l:'Just noticed',v:2},{e:'📅',l:'1 – 4 weeks',v:3},{e:'🗓️',l:'Over a month',v:4},{e:'✨',l:'No changes',v:0}]},
-
-  { id:'family', sn:6,
-    bot:"Has any close family member been diagnosed with breast or ovarian cancer?",
-    note:"Mother, sister, grandmother, or daughter counts as a close family member.",
-    type:'illust', multi:false,
-    opts:[{e:'👩',l:'Yes, one person',v:2},{e:'👨‍👩‍👧',l:'More than one',v:4},{e:'✅',l:'Not that I know',v:0},{e:'🤷',l:'Unsure',v:1}]},
-
-  { id:'screening', sn:7, bot:"When did you last have a breast exam or mammogram with a doctor?",
-    type:'illust', multi:false,
-    opts:[{e:'✅',l:'Within last year',v:0},{e:'🕐',l:'1 – 2 years ago',v:1},{e:'⏳',l:'Over 2 years ago',v:2},{e:'🔴',l:'Never had one',v:3}]},
-
-  { id:'selfexam', sn:8, bot:"Do you perform monthly breast self-exams at home?",
-    type:'illust', multi:false,
-    opts:[{e:'✅',l:'Yes, monthly',v:0},{e:'🔄',l:'Sometimes',v:1},{e:'❌',l:'Never',v:2}]},
-
-  { id:'lifestyle', sn:9, bot:"Do any of these apply to your lifestyle? Select all that apply.",
-    type:'illust', multi:true,
-    opts:[{e:'🚬',l:'I smoke',v:2},{e:'🍷',l:'High alcohol',v:2},{e:'🛋️',l:'Mostly sedentary',v:1},{e:'⚖️',l:'Obesity / overweight',v:2},{e:'🌿',l:'None of these',v:0}]},
-
-  { id:'stress', sn:10, bot:"Last one. How would you describe your current overall stress level?",
-    type:'illust', multi:false,
-    opts:[{e:'😌',l:'Low',v:0},{e:'😐',l:'Moderate',v:1},{e:'😰',l:'High',v:2}]}
+var steps=[
+  {id:'welcome',sn:1,bot:"Hi there 🌸 I'm FEAR — Find Early, Act Responsibly. I'll guide you through a private breast health check-in. Everything you share stays completely between us.",type:'single',single:"I understand and accept"},
+  {id:'age',sn:2,bot:"How old are you? Age is one of the most important risk factors for breast health.",type:'illust',multi:false,opts:[{e:'🌱',l:'Under 30',v:0},{e:'🌸',l:'30 – 39',v:1},{e:'🌺',l:'40 – 49',v:2},{e:'🌻',l:'50 or older',v:3}]},
+  {id:'symptoms',sn:3,bot:"Have you noticed anything unusual recently? Select all that apply.",note:"Early signs can include lumps, skin changes, or nipple changes. It is okay if you have not noticed anything.",type:'illust',multi:true,opts:[{s:'lump',l:'Lump or thickening',v:4},{s:'skin',l:'Skin dimpling',v:3},{s:'nipple',l:'Nipple change',v:3},{s:'pain',l:'Breast pain',v:2},{s:'swelling',l:'Swelling or warmth',v:2},{s:'none',l:'No changes noticed',v:0}]},
+  {id:'location',sn:4,bot:"If you noticed any changes, where are they located?",type:'body',multi:false,opts:[{s:'upperOuter',l:'Upper outer',v:1},{s:'upperInner',l:'Upper inner',v:1},{s:'lowerOuter',l:'Lower outer',v:1},{s:'lowerInner',l:'Lower inner',v:1},{s:'nippleArea',l:'Nipple area',v:2},{s:'underArm',l:'Under arm',v:2},{s:'both',l:'Both sides',v:2},{s:'noLoc',l:'Not sure',v:0}]},
+  {id:'duration',sn:5,bot:"How long have you been aware of any changes?",type:'illust',multi:false,opts:[{e:'⚡',l:'Just noticed',v:2},{e:'📅',l:'1 – 4 weeks',v:3},{e:'🗓️',l:'Over a month',v:4},{e:'✨',l:'No changes',v:0}]},
+  {id:'family',sn:6,bot:"Has any close family member been diagnosed with breast or ovarian cancer?",note:"Mother, sister, grandmother, or daughter counts as a close family member.",type:'illust',multi:false,opts:[{e:'👩',l:'Yes, one person',v:2},{e:'👨‍👩‍👧',l:'More than one',v:4},{e:'✅',l:'Not that I know',v:0},{e:'🤷',l:'Unsure',v:1}]},
+  {id:'screening',sn:7,bot:"When did you last have a breast exam or mammogram with a doctor?",type:'illust',multi:false,opts:[{e:'✅',l:'Within last year',v:0},{e:'🕐',l:'1 – 2 years ago',v:1},{e:'⏳',l:'Over 2 years ago',v:2},{e:'🔴',l:'Never had one',v:3}]},
+  {id:'selfexam',sn:8,bot:"Do you perform monthly breast self-exams at home?",type:'illust',multi:false,opts:[{e:'✅',l:'Yes, monthly',v:0},{e:'🔄',l:'Sometimes',v:1},{e:'❌',l:'Never',v:2}]},
+  {id:'lifestyle',sn:9,bot:"Do any of these apply to your lifestyle? Select all that apply.",type:'illust',multi:true,opts:[{e:'🚬',l:'I smoke',v:2},{e:'🍷',l:'High alcohol',v:2},{e:'🛋️',l:'Mostly sedentary',v:1},{e:'⚖️',l:'Obesity / overweight',v:2},{e:'🌿',l:'None of these',v:0}]},
+  {id:'stress',sn:10,bot:"Last one. How would you describe your current overall stress level?",type:'illust',multi:false,opts:[{e:'😌',l:'Low',v:0},{e:'😐',l:'Moderate',v:1},{e:'😰',l:'High',v:2}]}
 ];
 
-/* ══════════════════════════════════════
-   STATE
-══════════════════════════════════════ */
-var cur=0, score=0, answers=[], selVals=[], savedResult=null;
-var assessStarted = false;
+var cur=0,score=0,answers=[],selVals=[],savedResult=null,assessStarted=false;
 
-/* ══════════════════════════════════════
-   SVGs
-══════════════════════════════════════ */
-function svg(id){
+function svgIcon(id){
   var m={
     lump:'<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="22" r="12" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.5"/><circle cx="20" cy="22" r="6" fill="#F5B8CC"/><circle cx="17" cy="19" r="2" fill="#E8547A" opacity=".4"/></svg>',
     skin:'<svg width="40" height="40" viewBox="0 0 40 40"><ellipse cx="20" cy="22" rx="12" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.5"/><path d="M15 20 Q20 15 25 20" stroke="#E8547A" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M14 25 Q20 29 26 25" stroke="#E8547A" stroke-width="1" fill="none" opacity=".5" stroke-linecap="round"/></svg>',
@@ -463,45 +597,63 @@ function svg(id){
     pain:'<svg width="40" height="40" viewBox="0 0 40 40"><ellipse cx="20" cy="23" rx="13" ry="10" fill="#FFE8EE" stroke="#E8547A" stroke-width="1.5"/><path d="M17 20l2.5 3.5 5-6" stroke="#E8547A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/></svg>',
     swelling:'<svg width="40" height="40" viewBox="0 0 40 40"><ellipse cx="20" cy="23" rx="15" ry="11" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.5"/><ellipse cx="20" cy="23" rx="9" ry="6.5" fill="#F5B8CC" opacity=".5"/></svg>',
     none:'<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" fill="#E8F5E9" stroke="#66BB6A" stroke-width="1.5"/><path d="M14 20l4 4 8-8" stroke="#43A047" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    upperOuter:'<svg width="38" height="38" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="25" cy="16" rx="6" ry="5" fill="#F5B8CC"/></svg>',
-    upperInner:'<svg width="38" height="38" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="13" cy="16" rx="6" ry="5" fill="#F5B8CC"/></svg>',
-    lowerOuter:'<svg width="38" height="38" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="25" cy="26" rx="6" ry="4" fill="#F5B8CC"/></svg>',
-    lowerInner:'<svg width="38" height="38" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="13" cy="26" rx="6" ry="4" fill="#F5B8CC"/></svg>',
-    nippleArea:'<svg width="38" height="38" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><circle cx="19" cy="22" r="4" fill="#E8547A"/></svg>',
-    underArm:'<svg width="38" height="38" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="31" cy="17" rx="5" ry="4" fill="#F5B8CC"/></svg>',
-    both:'<svg width="38" height="38" viewBox="0 0 38 38"><ellipse cx="12" cy="22" rx="9" ry="8" fill="#F5B8CC" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="26" cy="22" rx="9" ry="8" fill="#F5B8CC" stroke="#E8547A" stroke-width="1.2"/></svg>',
-    noLoc:'<svg width="38" height="38" viewBox="0 0 38 38"><circle cx="19" cy="19" r="14" fill="#F6F6F6" stroke="#DDD" stroke-width="1.2"/><text x="19" y="24" text-anchor="middle" font-size="14" fill="#AAA">?</text></svg>'
+    upperOuter:'<svg width="36" height="36" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="25" cy="16" rx="6" ry="5" fill="#F5B8CC"/></svg>',
+    upperInner:'<svg width="36" height="36" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="13" cy="16" rx="6" ry="5" fill="#F5B8CC"/></svg>',
+    lowerOuter:'<svg width="36" height="36" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="25" cy="26" rx="6" ry="4" fill="#F5B8CC"/></svg>',
+    lowerInner:'<svg width="36" height="36" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="13" cy="26" rx="6" ry="4" fill="#F5B8CC"/></svg>',
+    nippleArea:'<svg width="36" height="36" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><circle cx="19" cy="22" r="4" fill="#E8547A"/></svg>',
+    underArm:'<svg width="36" height="36" viewBox="0 0 38 38"><ellipse cx="19" cy="22" rx="13" ry="10" fill="#FDEEF3" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="31" cy="17" rx="5" ry="4" fill="#F5B8CC"/></svg>',
+    both:'<svg width="36" height="36" viewBox="0 0 38 38"><ellipse cx="12" cy="22" rx="9" ry="8" fill="#F5B8CC" stroke="#E8547A" stroke-width="1.2"/><ellipse cx="26" cy="22" rx="9" ry="8" fill="#F5B8CC" stroke="#E8547A" stroke-width="1.2"/></svg>',
+    noLoc:'<svg width="36" height="36" viewBox="0 0 38 38"><circle cx="19" cy="19" r="14" fill="#F6F6F6" stroke="#DDD" stroke-width="1.2"/><text x="19" y="24" text-anchor="middle" font-size="14" fill="#AAA">?</text></svg>'
   };
   return m[id]||'';
 }
 
-/* ══════════════════════════════════════
-   RENDER OPTIONS
-══════════════════════════════════════ */
-function renderOptions(step){
-  var p = document.getElementById('optionsPanel');
-  p.innerHTML=''; selVals=[];
+/* ── SIDEBAR TOGGLE ── */
+function toggleSidebar(){
+  var s=document.getElementById('sidebar');
+  var o=document.getElementById('sidebarOverlay');
+  s.classList.toggle('open');
+  o.classList.toggle('visible');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('visible');
+}
 
+/* ── BOTTOM TAB ── */
+function tabSwitch(type){
+  ['Home','Assess','Followup','Report'].forEach(function(t){
+    var el=document.getElementById('tab'+t);
+    if(el) el.classList.remove('tab-active');
+  });
+  var map={home:'Home',assess:'Assess',followup:'Followup',report:'Report'};
+  var el=document.getElementById('tab'+map[type]);
+  if(el) el.classList.add('tab-active');
+  if(type==='home') showHome();
+  else openChat(type);
+}
+
+/* ── OPTIONS ── */
+function renderOptions(step){
+  var p=document.getElementById('optionsPanel');
+  p.innerHTML=''; selVals=[];
   if(step.type==='single'){
     var b=document.createElement('button'); b.className='single-btn';
-    b.textContent=step.single;
-    b.onclick=function(){ submitSingle(step.single,0); };
+    b.textContent=step.single; b.onclick=function(){submitSingle(step.single,0);};
     p.appendChild(b); return;
   }
-
   var hint=document.createElement('div'); hint.className='opt-hint';
-  hint.textContent=step.multi?'Select all that apply, then click Send':'Select one option below';
+  hint.textContent=step.multi?'Select all that apply, then tap Send':'Select one option';
   p.appendChild(hint);
-
   var isBody=(step.type==='body');
   var grid=document.createElement('div');
   grid.className=isBody?'body-grid':'illust-grid';
-
   step.opts.forEach(function(opt){
     var card=document.createElement('div');
     card.className=isBody?'body-card':'illust-card';
     card.dataset.val=opt.v; card.dataset.label=opt.l;
-    var icon = opt.s ? svg(opt.s) : '<div class="ic-emoji">'+(opt.e||'')+'</div>';
+    var icon=opt.s?svgIcon(opt.s):'<div class="ic-emoji">'+(opt.e||'')+'</div>';
     card.innerHTML=icon+'<div class="ic-label">'+opt.l+'</div>';
     card.onclick=function(){
       if(step.multi){
@@ -511,41 +663,30 @@ function renderOptions(step){
         sb.disabled=selVals.length===0;
       } else {
         grid.querySelectorAll('.illust-card,.body-card').forEach(function(c){c.classList.remove('selected');});
-        card.classList.add('selected');
-        selVals=[{v:parseInt(opt.v),l:opt.l}];
-        sb.disabled=false;
+        card.classList.add('selected'); selVals=[{v:parseInt(opt.v),l:opt.l}]; sb.disabled=false;
       }
     };
     grid.appendChild(card);
   });
   p.appendChild(grid);
-
   var row=document.createElement('div'); row.className='send-row';
-  var sb=document.createElement('button'); sb.className='send-btn';
-  sb.textContent='Send'; sb.disabled=true;
-  sb.onclick=function(){ submitMulti(step); };
-  row.appendChild(sb); p.appendChild(row);
+  var sb=document.createElement('button'); sb.className='send-btn'; sb.textContent='Send'; sb.disabled=true;
+  sb.onclick=function(){submitMulti(step);}; row.appendChild(sb); p.appendChild(row);
 }
 
 function submitSingle(label,val){
-  appendUser(label);
-  document.getElementById('optionsPanel').innerHTML='';
-  answers.push({q:steps[cur].id,a:label});
-  score+=val; cur++; updateProg(); next();
+  appendUser(label); document.getElementById('optionsPanel').innerHTML='';
+  answers.push({q:steps[cur].id,a:label}); score+=val; cur++; updateProg(); next();
 }
 function submitMulti(step){
   if(!selVals.length) return;
   var labels=selVals.map(function(x){return x.l;}).join(', ');
   var add=0; selVals.forEach(function(x){add+=x.v;});
-  appendUser(labels);
-  document.getElementById('optionsPanel').innerHTML='';
-  answers.push({q:step.id,a:labels});
-  score+=add; cur++; updateProg(); next();
+  appendUser(labels); document.getElementById('optionsPanel').innerHTML='';
+  answers.push({q:step.id,a:labels}); score+=add; cur++; updateProg(); next();
 }
 
-/* ══════════════════════════════════════
-   FLOW
-══════════════════════════════════════ */
+/* ── FLOW ── */
 function next(){
   if(cur<steps.length){
     var s=steps[cur];
@@ -554,8 +695,8 @@ function next(){
       if(s.note) setTimeout(function(){
         var scr=document.getElementById('assessScroll');
         var r=document.createElement('div'); r.className='msg-row';
-        r.innerHTML='<div style="width:32px;flex-shrink:0"></div><div class="bubble note">'+s.note+'</div>';
-        scr.appendChild(r); scrollTo('assessScroll');
+        r.innerHTML='<div style="width:30px;flex-shrink:0"></div><div class="bubble note">'+s.note+'</div>';
+        scr.appendChild(r); scrollEl('assessScroll');
       },350);
       renderOptions(s);
     });
@@ -568,17 +709,12 @@ function updateProg(){
   document.getElementById('progTxt').textContent='Step '+(Math.min(cur+1,TOTAL))+' of '+TOTAL;
 }
 
-/* ══════════════════════════════════════
-   RESULT
-══════════════════════════════════════ */
+/* ── RESULT ── */
 function getRisk(lv){
   return {
-    low:{title:'Your risk appears low right now',body:'Based on your responses, your profile aligns with lower-risk patterns. Keep up regular self-checks and annual clinical visits.',
-      actions:['Perform a breast self-exam once a month at home','Schedule an annual check-up with your doctor','Check back in 6 months — I will remind you']},
-    medium:{title:'Some factors worth monitoring',body:'A few of your responses suggest speaking to a healthcare provider within the next few weeks. Not urgent, but timely attention matters.',
-      actions:['Book a clinical breast exam within 4 weeks','Share your family history with your doctor','Consider a mammogram if you are 40 or older']},
-    high:{title:'Please see a doctor soon',body:'Your responses indicate patterns that need prompt professional attention. This is not a diagnosis — but please act this week.',
-      actions:['Contact a doctor or breast clinic this week','Do not let fear delay you — early detection changes outcomes','Bring someone you trust with you']}
+    low:{title:'Your risk appears low right now',body:'Based on your responses, your profile aligns with lower-risk patterns. Keep up regular self-checks and annual clinical visits.',actions:['Perform a breast self-exam once a month at home','Schedule an annual check-up with your doctor','Check back in 6 months — I will remind you']},
+    medium:{title:'Some factors worth monitoring',body:'A few of your responses suggest speaking to a healthcare provider within the next few weeks. Not urgent, but timely attention matters.',actions:['Book a clinical breast exam within 4 weeks','Share your family history with your doctor','Consider a mammogram if you are 40 or older']},
+    high:{title:'Please see a doctor soon',body:'Your responses indicate patterns that need prompt professional attention. This is not a diagnosis — but please act this week.',actions:['Contact a doctor or breast clinic this week','Do not let fear delay you — early detection changes outcomes','Bring someone you trust with you']}
   }[lv];
 }
 
@@ -589,18 +725,11 @@ function showResult(){
     appendBot("Thank you for trusting me with this 🌸 Analysing your responses now…",'assess');
     var lr=document.createElement('div'); lr.className='msg-row'; lr.id='loadRow';
     lr.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot"><span style="font-size:13px;color:var(--text3);font-style:italic">Your trained model is calculating risk…</span></div>';
-    scr.appendChild(lr); scrollTo('assessScroll');
-
+    scr.appendChild(lr); scrollEl('assessScroll');
     fetch(API+'/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({answers:answers,score:score})})
     .then(function(r){return r.json();})
-    .then(function(d){
-      var l=document.getElementById('loadRow'); if(l) l.remove();
-      if(d.error){fallback();return;}
-      renderResult(d.risk_level,d.malignant_prob,d.guidance);
-    }).catch(function(){
-      var l=document.getElementById('loadRow'); if(l) l.remove();
-      fallback();
-    });
+    .then(function(d){var l=document.getElementById('loadRow');if(l)l.remove();if(d.error){fallback();return;}renderResult(d.risk_level,d.malignant_prob,d.guidance);})
+    .catch(function(){var l=document.getElementById('loadRow');if(l)l.remove();fallback();});
   },900);
 }
 
@@ -609,74 +738,48 @@ function renderResult(lv,prob,guidance){
   var c=getRisk(lv);
   savedResult={lv:lv,prob:prob,guidance:guidance,answers:answers,score:score,date:new Date().toLocaleDateString()};
   var days=lv==='low'?180:lv==='medium'?28:7;
-
   var card=document.createElement('div'); card.className='risk-card '+lv;
-  card.innerHTML=
-    '<div class="risk-pill">'+lv+' risk</div>'+
-    '<div class="risk-title">'+c.title+'</div>'+
-    '<div class="risk-body">'+c.body+'</div>'+
-    '<div class="actions-list">'+c.actions.map(function(a){return '<div class="action-item"><div class="action-dot"></div><span>'+a+'</span></div>';}).join('')+'</div>'+
-    '<div class="conf-track" style="margin-top:14px"><div class="conf-bar" id="cBar" style="width:0%"></div></div>'+
-    '<div class="conf-txt">Model confidence: '+prob+'% malignant probability</div>';
+  card.innerHTML='<div class="risk-pill">'+lv+' risk</div><div class="risk-title">'+c.title+'</div><div class="risk-body">'+c.body+'</div><div class="actions-list">'+c.actions.map(function(a){return '<div class="action-item"><div class="action-dot"></div><span>'+a+'</span></div>';}).join('')+'</div><div class="conf-track" style="margin-top:14px"><div class="conf-bar" id="cBar" style="width:0%"></div></div><div class="conf-txt">Model confidence: '+prob+'% malignant probability</div>';
   scr.appendChild(card);
   setTimeout(function(){var b=document.getElementById('cBar');if(b)b.style.width=prob+'%';},300);
-
   var gr=document.createElement('div'); gr.className='msg-row';
   gr.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot" style="background:#FBF4F7;border-color:var(--border2);">'+guidance+'</div>';
   scr.appendChild(gr);
-
   var badge=document.createElement('div'); badge.className='followup-badge';
   badge.innerHTML='<span style="font-size:16px">🕐</span><span>Follow-up reminder set for <strong>'+days+' days</strong> from today.</span>';
   scr.appendChild(badge);
-
   var disc=document.createElement('p'); disc.className='disclaimer';
   disc.textContent='This is not a medical diagnosis. Always consult a qualified healthcare professional for any health concerns.';
   scr.appendChild(disc);
-
   var rb=document.createElement('button'); rb.className='restart-btn';
-  rb.textContent='↺  Start a new assessment'; rb.onclick=resetAssess;
-  scr.appendChild(rb);
-  scrollTo('assessScroll');
-
+  rb.textContent='↺  Start a new assessment'; rb.onclick=resetAssess; scr.appendChild(rb);
+  scrollEl('assessScroll');
   unlockChats(lv,days);
 }
 
 function fallback(){
   var lv=score<=4?'low':score<=10?'medium':'high';
-  renderResult(lv,score<=4?18:score<=10?42:72,'Your responses have been recorded. Make sure python app.py is running for full model analysis.');
+  renderResult(lv,score<=4?18:score<=10?42:72,'Your responses have been recorded. Make sure the model API is running for full analysis.');
 }
 
-/* ══════════════════════════════════════
-   UNLOCK CHATS
-══════════════════════════════════════ */
+/* ── UNLOCK ── */
 function unlockChats(lv,days){
-  // sidebar
   var cf=document.getElementById('crFollowup'); cf.classList.remove('locked');
-  cf.onclick=function(){openChat('followup');};
-  document.getElementById('crFollowupPreview').textContent='Check-in in '+days+' days · tap to view';
+  cf.onclick=function(){openChat('followup');closeSidebar();};
+  document.getElementById('crFollowupPreview').textContent='Check-in in '+days+' days';
   document.getElementById('crFollowupLock').style.display='none';
   var cr2=document.getElementById('crReport'); cr2.classList.remove('locked');
-  cr2.onclick=function(){openChat('report');};
-  document.getElementById('crReportPreview').textContent=lv.charAt(0).toUpperCase()+lv.slice(1)+' risk · view your report';
+  cr2.onclick=function(){openChat('report');closeSidebar();};
+  document.getElementById('crReportPreview').textContent=lv.charAt(0).toUpperCase()+lv.slice(1)+' risk · view report';
   document.getElementById('crReportLock').style.display='none';
-  document.getElementById('crAssessPreview').textContent='Assessment complete · '+lv+' risk';
+  document.getElementById('crAssessPreview').textContent='Complete · '+lv+' risk';
   var bd=document.getElementById('crAssessBadge'); if(bd) bd.style.display='none';
-
-  // home cards
-  var qf=document.getElementById('qcFollowup'); qf.classList.remove('locked-card');
-  qf.onclick=function(){openChat('followup');};
+  var qf=document.getElementById('qcFollowup'); qf.classList.remove('locked-card'); qf.onclick=function(){openChat('followup');};
   document.getElementById('qcFollowupBadge').className='qc-badge badge-done'; document.getElementById('qcFollowupBadge').textContent='Unlocked';
-  var qr=document.getElementById('qcReport'); qr.classList.remove('locked-card');
-  qr.onclick=function(){openChat('report');};
+  var qr=document.getElementById('qcReport'); qr.classList.remove('locked-card'); qr.onclick=function(){openChat('report');};
   document.getElementById('qcReportBadge').className='qc-badge badge-done'; document.getElementById('qcReportBadge').textContent='Unlocked';
   document.getElementById('qcAssessBadge').className='qc-badge badge-done'; document.getElementById('qcAssessBadge').textContent='Complete ✓';
-
-  // smart rows
-  buildSmartRows(lv);
-
-  // build other screens
-  buildFollowup(lv,days);
-  buildReport();
+  buildSmartRows(lv); buildFollowup(lv,days); buildReport();
 }
 
 function buildSmartRows(lv){
@@ -689,61 +792,35 @@ function buildSmartRows(lv){
   items.forEach(function(it){
     var row=document.createElement('div'); row.className='chat-row';
     row.innerHTML='<div class="cr-icon '+it.bg+'">'+it.icon+'</div><div class="cr-info"><div class="cr-title">'+it.title+'</div><div class="cr-preview">'+it.prev+'</div></div><div class="cr-badge"></div>';
-    row.onclick=function(){toast(it.title+' — coming soon!');};
-    c.appendChild(row);
+    row.onclick=function(){toast(it.title+' — coming soon!');closeSidebar();}; c.appendChild(row);
   });
 }
 
 function buildFollowup(lv,days){
   var scr=document.getElementById('followupScroll'); scr.innerHTML='';
-  var msgs=[
-    "Hi 🌸 This is your Follow-up &amp; Reminders space.",
-    "Based on your <strong>"+lv+" risk</strong> result, I've scheduled a check-in reminder for <strong>"+days+" days</strong> from today.",
-    lv==='high'?"I strongly encourage you to book a clinical appointment this week. Early action is the most powerful thing you can do for yourself."
-      :lv==='medium'?"In the meantime, continue monthly self-exams and speak with your doctor within the next 4 weeks. You have taken a great first step."
-      :"You are doing great by checking in proactively. I will remind you again in 6 months. Keep doing self-exams monthly 🌸"
-  ];
-  msgs.forEach(function(m,i){
-    setTimeout(function(){
-      var r=document.createElement('div'); r.className='msg-row';
-      r.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot">'+m+'</div>';
-      scr.appendChild(r); scr.scrollTop=scr.scrollHeight;
-    },i*650);
-  });
+  var msgs=["Hi 🌸 This is your Follow-up &amp; Reminders space.","Based on your <strong>"+lv+" risk</strong> result, I've scheduled a check-in reminder for <strong>"+days+" days</strong> from today.",lv==='high'?"I strongly encourage you to book a clinical appointment this week. Early action is the most powerful thing you can do for yourself.":lv==='medium'?"In the meantime, continue monthly self-exams and speak with your doctor within the next 4 weeks. You have taken a great first step.":"You are doing great by checking in proactively. I will remind you again in 6 months. Keep doing self-exams monthly 🌸"];
+  msgs.forEach(function(m,i){setTimeout(function(){var r=document.createElement('div');r.className='msg-row';r.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot">'+m+'</div>';scr.appendChild(r);scr.scrollTop=scr.scrollHeight;},i*650);});
 }
 
 function buildReport(){
   if(!savedResult) return;
-  var scr=document.getElementById('reportScroll'); scr.innerHTML='';
-  var r=savedResult;
+  var scr=document.getElementById('reportScroll'); scr.innerHTML=''; var r=savedResult;
   setTimeout(function(){
     var row=document.createElement('div'); row.className='msg-row';
     row.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot">Here is your complete health report from <strong>'+r.date+'</strong>.</div>';
     scr.appendChild(row);
-
-    var card=document.createElement('div'); card.className='risk-card '+r.lv;
-    var c=getRisk(r.lv);
-    card.innerHTML='<div class="risk-pill">'+r.lv+' risk · '+r.date+'</div>'+
-      '<div class="risk-title">'+c.title+'</div>'+
-      '<div class="risk-body">Model malignant probability: <strong>'+r.prob+'%</strong></div>'+
-      '<div class="actions-list">'+c.actions.map(function(a){return '<div class="action-item"><div class="action-dot"></div><span>'+a+'</span></div>';}).join('')+'</div>';
+    var card=document.createElement('div'); card.className='risk-card '+r.lv; var c=getRisk(r.lv);
+    card.innerHTML='<div class="risk-pill">'+r.lv+' risk · '+r.date+'</div><div class="risk-title">'+c.title+'</div><div class="risk-body">Model malignant probability: <strong>'+r.prob+'%</strong></div><div class="actions-list">'+c.actions.map(function(a){return '<div class="action-item"><div class="action-dot"></div><span>'+a+'</span></div>';}).join('')+'</div>';
     scr.appendChild(card);
-
     var sumRow=document.createElement('div'); sumRow.className='msg-row';
-    sumRow.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot" style="font-size:13px;line-height:1.7;">Your answers:<br><br>'+
-      r.answers.map(function(a){return '· <strong>'+a.q+'</strong>: '+a.a;}).join('<br>')+'</div>';
+    sumRow.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot" style="font-size:13px;line-height:1.7;">Your answers:<br><br>'+r.answers.map(function(a){return '· <strong>'+a.q+'</strong>: '+a.a;}).join('<br>')+'</div>';
     scr.appendChild(sumRow);
-
-    var disc=document.createElement('p'); disc.className='disclaimer';
-    disc.textContent='This is not a medical diagnosis. Always consult a qualified healthcare professional.';
-    scr.appendChild(disc);
+    var disc=document.createElement('p'); disc.className='disclaimer'; disc.textContent='This is not a medical diagnosis. Always consult a qualified healthcare professional.'; scr.appendChild(disc);
     scr.scrollTop=scr.scrollHeight;
   },300);
 }
 
-/* ══════════════════════════════════════
-   NAVIGATION
-══════════════════════════════════════ */
+/* ── NAVIGATION ── */
 var panels={home:'panelHome',assess:'panelAssess',followup:'panelFollowup',report:'panelReport'};
 var topbarData={
   home:{icon:'🌸',title:'FEAR — Find Early, Act Responsibly',sub:'Select a conversation to begin',prog:false},
@@ -752,29 +829,21 @@ var topbarData={
   report:{icon:'📋',title:'My Health Report',sub:'Risk summary and model analysis',prog:false}
 };
 
-function showHome(){
-  switchPanel('home');
-  setActive('navHome');
-}
+function showHome(){switchPanel('home');setActive('navHome');}
 
 function openChat(type){
   if((type==='followup'||type==='report')&&!savedResult){lockedClick();return;}
   switchPanel(type);
-  ['crAssess','crFollowup','crReport'].forEach(function(id){
-    var el=document.getElementById(id); if(el) el.classList.remove('active');
-  });
+  ['crAssess','crFollowup','crReport'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('active');});
   var map={assess:'crAssess',followup:'crFollowup',report:'crReport'};
-  if(map[type]){var el=document.getElementById(map[type]); if(el) el.classList.add('active');}
+  if(map[type]){var el=document.getElementById(map[type]);if(el)el.classList.add('active');}
   setActive(null);
   if(type==='assess'&&!assessStarted){assessStarted=true;startAssess();}
   if(type==='report'&&savedResult) buildReport();
 }
 
 function switchPanel(name){
-  Object.keys(panels).forEach(function(k){
-    var el=document.getElementById(panels[k]);
-    if(el) el.style.display=(k===name)?'flex':'none';
-  });
+  Object.keys(panels).forEach(function(k){var el=document.getElementById(panels[k]);if(el)el.style.display=(k===name)?'flex':'none';});
   var tb=topbarData[name]||topbarData.home;
   document.getElementById('tbIcon').textContent=tb.icon;
   document.getElementById('tbTitle').textContent=tb.title;
@@ -783,54 +852,42 @@ function switchPanel(name){
 }
 
 function setActive(id){
-  ['navHome','navInsights','navHistory','navSettings'].forEach(function(n){
-    var el=document.getElementById(n); if(el) el.classList.remove('active');
-  });
-  if(id){var el=document.getElementById(id); if(el) el.classList.add('active');}
+  ['navHome','navInsights','navHistory','navSettings'].forEach(function(n){var el=document.getElementById(n);if(el)el.classList.remove('active');});
+  if(id){var el=document.getElementById(id);if(el)el.classList.add('active');}
 }
 
-function lockedClick(){ toast('Complete your assessment first to unlock this chat.'); }
+function lockedClick(){toast('Complete your assessment first to unlock this.');}
 
-/* ══════════════════════════════════════
-   CHAT HELPERS
-══════════════════════════════════════ */
+/* ── CHAT HELPERS ── */
 function appendBot(html,panel){
   panel=panel||'assess';
   var scr=document.getElementById(panel+'Scroll');
   var r=document.createElement('div'); r.className='msg-row';
   r.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot">'+html+'</div>';
-  scr.appendChild(r); scrollTo(panel+'Scroll');
+  scr.appendChild(r); scrollEl(panel+'Scroll');
 }
-
 function appendUser(text){
   var scr=document.getElementById('assessScroll');
-  var b=document.createElement('div'); b.className='bubble user'; b.textContent=text;
-  scr.appendChild(b); scrollTo('assessScroll');
+  var b=document.createElement('div'); b.className='bubble user'; b.textContent=text; scr.appendChild(b); scrollEl('assessScroll');
 }
-
 function typing(panel,cb,delay){
   delay=delay||700;
   var scr=document.getElementById((panel||'assess')+'Scroll');
   var r=document.createElement('div'); r.className='msg-row'; r.id='typRow';
   r.innerHTML='<div class="msg-av">🌸</div><div class="bubble bot"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
-  scr.appendChild(r); scrollTo((panel||'assess')+'Scroll');
+  scr.appendChild(r); scrollEl((panel||'assess')+'Scroll');
   setTimeout(function(){var el=document.getElementById('typRow');if(el)el.remove();cb();},delay);
 }
+function scrollEl(id){var el=document.getElementById(id);if(el)el.scrollTop=el.scrollHeight;}
 
-function scrollTo(id){var el=document.getElementById(id);if(el)el.scrollTop=el.scrollHeight;}
-
-/* ══════════════════════════════════════
-   ASSESS START / RESET
-══════════════════════════════════════ */
+/* ── ASSESS ── */
 function startAssess(){
   cur=0;score=0;answers=[];
   document.getElementById('assessScroll').innerHTML='';
   updateProg();
-  var s=steps[0];
-  appendBot(s.bot,'assess');
-  renderOptions(s);
+  appendBot(steps[0].bot,'assess');
+  renderOptions(steps[0]);
 }
-
 function resetAssess(){
   cur=0;score=0;answers=[];savedResult=null;assessStarted=false;
   document.getElementById('assessScroll').innerHTML='';
@@ -840,18 +897,13 @@ function resetAssess(){
   renderOptions(steps[0]);
 }
 
-/* ══════════════════════════════════════
-   TOAST
-══════════════════════════════════════ */
+/* ── TOAST ── */
 function toast(msg){
-  var t=document.getElementById('toastEl');
-  t.textContent=msg; t.style.opacity='1';
+  var t=document.getElementById('toastEl'); t.textContent=msg; t.style.opacity='1';
   setTimeout(function(){t.style.opacity='0';},2200);
 }
 
-/* ══════════════════════════════════════
-   API STATUS
-══════════════════════════════════════ */
+/* ── API STATUS ── */
 function checkAPI(){
   fetch(API+'/health').then(function(r){return r.json();})
   .then(function(d){
@@ -859,7 +911,7 @@ function checkAPI(){
     document.getElementById('apiLabel').textContent=d.status==='ok'?'Model connected':'Model error';
   }).catch(function(){
     document.getElementById('apiDot').className='api-dot off';
-    document.getElementById('apiLabel').textContent='Run: python app.py';
+    document.getElementById('apiLabel').textContent='API offline';
   });
 }
 checkAPI();
